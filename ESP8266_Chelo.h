@@ -7,6 +7,12 @@
 *
 *******************************************************************************/
 #include "main.h"
+//------------------------- PARA FUNCION de automatizacion---------------------//
+#define CONFIG 0
+#define CONNECT  1
+#define CONNECT_TCP 2
+#define SEND 3
+
 //------------------------- PARA FUNCION FT_String_ND -------------------------//
 #define FIND 0
 #define TOK  1
