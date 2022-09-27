@@ -8,10 +8,10 @@
 *******************************************************************************/
 #include "main.h"
 //------------------------- PARA FUNCION de automatizacion---------------------//
-#define CONFIG 0
-#define CONNECT  1
-#define CONNECT_TCP 2
-#define SEND 3
+#define WF_CONFIG 0
+#define WF_CONNECT 1
+#define WF_CONNECT_TCP 2
+#define WF_SEND 3
 
 //------------------------- PARA FUNCION FT_String_ND -------------------------//
 #define FIND 0
