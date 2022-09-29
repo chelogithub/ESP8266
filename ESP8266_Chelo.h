@@ -131,8 +131,8 @@ struct WIFI
 	char _TCP_Local_Server_GWY[16];			//Gateway Servidor TCP Local
 	char _TCP_Local_Server_MSK[16];			//Mascara Servidor TCP Local
 	uint8_t  _TCP_Local_Server_EN;				//Habilitar modo Servidor TCP 0=DESACTIVADO 1=ACTIVADO
-	uint8_t  _TCP_Local_Server_Client;			//Habilitar modo Servidor TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _TCP_Local_Server_Initiated;		//Servidor TCP ya iniciado TCP 0=DESACTIVADO 1=ACTIVADO
+	uint8_t  _automatizacion;					//Tareas gestionadas automaticamente
 	int	 _estado;					//Estado de m�dulo WIFI
 	int  _estado_conexion;			//Estado de la conexion del m�dulo
 	int  _estado_rcv_data;			//Estado de Recepcion de datos
