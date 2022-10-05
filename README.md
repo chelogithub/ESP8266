@@ -2,6 +2,7 @@
  Library to manage ESP8266 as TCP Server/Client
 
 05/10/22
+Changed serial debug flag wf._WF_DBG_EN
 
 Pending to detect ETH5100 hang up, after that test HTTP Library
 

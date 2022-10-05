@@ -1073,7 +1073,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							{
 								b->_estado=AT_ESP8266_ND(b);  //Genero las instrucciones a enviar
 								b->_enviaruart=0;
-								if (EN_DEBUG==1)
+								if (b->_DBG_EN==1)
 								{
 									ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								}else{}
@@ -1157,7 +1157,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							{
 								b->_estado=AT_ESP8266_ND(b);
 								b->_enviaruart=0;
-								if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 							}
 				}
@@ -1247,7 +1247,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							{
 								b->_estado=AT_ESP8266_ND(b);
 								b->_enviaruart=0;
-								if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 							}
@@ -1297,7 +1297,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							{
 								b->_estado=AT_ESP8266_ND(b);
 								b->_enviaruart=0;
-								if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 
@@ -1369,7 +1369,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							{
 								b->_estado=AT_ESP8266_ND(b);
 								b->_enviaruart=0;
-								if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 
@@ -1460,7 +1460,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							{
 								b->_estado=AT_ESP8266_ND(b);
 								b->_enviaruart=0;
-								if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 
@@ -1578,7 +1578,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							{
 								b->_estado=AT_ESP8266_ND(b);
 								b->_enviaruart=0;
-								if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 
@@ -1592,7 +1592,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 											&&(b->_estado!=at_tcp_enviado_error))
 							{
 								b->_enviaruart=0;
-								if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 
@@ -1705,7 +1705,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 										{
 											b->_estado=AT_ESP8266_ND(b);
 											b->_enviaruart=0;
-											if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+											if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 											HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 
@@ -1910,7 +1910,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 										{
 											b->_estado=AT_ESP8266_ND(b);
 											b->_enviaruart=0;
-											if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+											if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 											HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 
@@ -1928,7 +1928,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 									   (b->_estado!=22)&&(b->_estado!=25))//210630 Se agrega 11 y 12 //
 										{
 											b->_enviaruart=0;
-											if (EN_DEBUG==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+											if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 											HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
 
 

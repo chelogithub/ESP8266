@@ -186,7 +186,8 @@ struct WIFI
 	int  _debug_ready;
 	int  _debug_WF_CNNCTD;
 	int  _debug_WF_GOTIP;
-	int	 _subpaso;					/*			1 - Conectar WIFI
+	int	 _subpaso;
+	int	 _DBG_EN;/*			1 - Conectar WIFI
 														2 - Desconectar WIFI
 														3 - Conectar TCP
 														4 - Desconectar TCP
