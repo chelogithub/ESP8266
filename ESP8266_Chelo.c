@@ -531,6 +531,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
+						//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 						//------Generacion del comando para definir multiples conexiones---------//
 						strncat(a->_uart2snd,"AT+CWMODE=1\r\n",strlen("AT+CWMODE=1\r\n"));
 						a->_n_uart2SND=strlen(a->_uart2snd);//210418
@@ -551,6 +552,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_estado=AT_decode;	//Devuelvo el estado WIFI Conectada
 						a->_instruccion=0;	//Finalizo la instrucci�n
 						a->_ejecucion=0;
+						//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 						a->_ticks=0;
 					}
 					//Reseteo cada vez que entro
@@ -572,6 +574,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 						//------Generacion del comando para conectar---------//
 						strncat(a->_uart2snd,"AT+CWJAP=",strlen("AT+CWJAP="));
 						strncat(a->_uart2snd,&comillas,1);
@@ -599,6 +602,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 							a->_instruccion=0;	//Para que siga contando por timeout al recibir WIFI DISCONNECT//Finalizo la instrucci�n
 							a->_ejecucion=0;
+							HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 						}
 
 						a->_ticks2=0;
@@ -617,6 +621,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 						//------Generacion del comando para desconectar---------//
 						strncat(a->_uart2snd,"AT+CWQAP\r\n",strlen("AT+CWQAP\r\n"));
 						a->_n_uart2SND=strlen(a->_uart2snd);
@@ -630,6 +635,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_estado=AT_decode;	//Devuelvo el estado WIFI Conectada
 						a->_instruccion=0;	//Finalizo la instrucci�n
 						a->_ejecucion=0;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 						a->_ticks=0;
 					}
 					//a->_ticks=0;						//Reseteo cada vez que entro
@@ -648,6 +654,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 						//------Generacion del comando para desconectar---------//
 						if(a->_TCP_Local_Server_EN==1)
 						{
@@ -676,6 +683,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_estado=AT_decode;	//Devuelvo el estado WIFI Conectada
 						a->_instruccion=0;	//Finalizo la instrucci�n
 						a->_ejecucion=0;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 						a->_ticks=0;
 					}
 					//a->_ticks=0;						//Reseteo cada vez que entro
@@ -696,6 +704,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 						//------Generacion del comando para desconectar---------//
 						strncat(a->_uart2snd,"AT+CIPSTA=",strlen("AT+CIPSTA="));
 						strncat(a->_uart2snd,&comillas,1);
@@ -724,6 +733,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_estado=AT_decode;	//Devuelvo el estado WIFI Conectada
 						a->_instruccion=0;	//Finalizo la instrucci�n
 						a->_ejecucion=0;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 						a->_ticks=0;
 					}
 					//a->_ticks=0;						//Reseteo cada vez que entro
@@ -745,6 +755,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 						//------Generacion del comando ---------//
 						strncat(a->_uart2snd,"AT+CIPSTART=",strlen("AT+CIPSTART="));
 						strncat(a->_uart2snd,&comillas,1);
@@ -771,6 +782,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_estado=AT_decode;	//Devuelvo el estado WIFI Conectada
 						a->_instruccion=0;	//Finalizo la instrucci�n
 						a->_ejecucion=0;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 						a->_ticks=0;
 					}
 					//a->_ticks=0;						//Reseteo cada vez que entro
@@ -790,6 +802,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 					a->_estado=AT_decode;
 					a->_instruccion=0;		//Finalizo la instrucci�n
 					a->_ejecucion=0;
+					HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 					a->_subpaso=0;
 				}
 				else
@@ -797,6 +810,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 							if( (a->_enviaruart==1)&&(a->_subpaso==0))
 								{
 										a->_ejecucion=1;
+										HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 										a->_estado=24;
 										a->_uart2snd[0]='\0';		//En teor�a borro lo que tenga el vector
 										a->_subpaso++;					//Asigno para que no vuelva a entrar
@@ -864,6 +878,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 									}
 									a->_instruccion=0;		//Finalizo la instrucci�n
 									a->_ejecucion=0;
+									HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 									a->_subpaso=0;
 								}
 				}
@@ -881,6 +896,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 						//------Generacion del comando ---------//
 						strncat(a->_uart2snd,"AT+CIPSERVER=1,",strlen("AT+CIPSERVER=1,"));
 						strncat(a->_uart2snd,a->_TCP_Local_Server_Port,strlen(a->_TCP_Local_Server_Port));
@@ -895,6 +911,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_estado=AT_decode;	//Devuelvo el estado WIFI Conectada
 						a->_instruccion=0;	//Finalizo la instrucci�n
 						a->_ejecucion=0;
+						HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 						a->_ticks=0;
 					}
 			}
@@ -911,6 +928,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 					a->_estado=AT_decode;
 					a->_instruccion=0;		//Finalizo la instrucci�n
 					a->_ejecucion=0;
+					HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 					a->_subpaso=0;
 				}
 				else
@@ -918,6 +936,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 							if( (a->_enviaruart==1)&&(a->_subpaso==0))
 								{
 										a->_ejecucion=1;
+										HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 										a->_estado=24;
 										a->_uart2snd[0]='\0';		//En teor�a borro lo que tenga el vector
 										a->_subpaso++;					//Asigno para que no vuelva a entrar
@@ -979,6 +998,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 									}
 									a->_instruccion=0;		//Finalizo la instrucci�n
 									a->_ejecucion=0;
+									HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 									a->_subpaso=0;
 								}
 				}
@@ -1058,6 +1078,10 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 									ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								}else{}
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
+//Acá debería estar le ejecución, cuando transmite, a partir de este momento se
+//encuentra a la espera de recibir datos.
+//Si los datos no se reciben, meto timeput y vuelvo a enviar.
+//Ejecución no tiene condicionales en estructuras IF
 							}
 						else{}
 				}
@@ -1533,9 +1557,22 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 									&&(b->_estado!=at_tcp_enviado_error))	//Si estoy conectando, no vuelvo a conectar.
 				{
 
-					if(b->_automatizacion >= WF_SEND)  // El envío por este medio es permanente
-					{
-						EnviarDatos(b);
+					if((b->_automatizacion >= WF_SEND)&&(b->_n_D2SND!=0))  // El envío por este medio es permanente
+					{	/*Ensure to have data before sending*/
+							EnviarDatos(b);
+							/*b->_data2SND[0]=0x00;//strcpy(wf._data2SND,"01;03;00;00;00;0A;C5;CD");//strcpy(wf._data2SND,"20;352;52#");
+							b->_data2SND[1]=0x00;
+							b->_data2SND[2]=0x00;
+							b->_data2SND[3]=0x00;
+							b->_data2SND[4]=0x00;
+							b->_data2SND[5]=0x06;
+							b->_data2SND[6]=0x01;
+							b->_data2SND[7]=0x03;
+							b->_data2SND[8]=0x00;//strcpy(wf._data2SND,"01;03;00;00;00;0A;C5;CD");//strcpy(wf._data2SND,"20;352;52#");
+							b->_data2SND[9]=0x00;
+							b->_data2SND[10]=0x00;
+							b->_data2SND[11]=0x0A;
+							b->_n_D2SND=12;*/
 					}
 						if(b->_enviaruart==1)
 							{
@@ -1643,7 +1680,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 					//EVITO EL REENVÍO PERMANENTE CON CLIENTE TCO, SOLO BAJO DEMANDA
 
 					HAL_Delay(200);
-					if(b->_automatizacion >= WF_SEND )
+					if((b->_automatizacion >= WF_SEND)&&(b->_n_D2SND!=0))//Check data availability after send process
 					{
 							EnviarDatos(b);
 							b->_estado_conexion=TCP_SND_EN_CURSO;
@@ -1836,14 +1873,16 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 									b->_estado=0;
 									b->_n_orig=0; //Borro el vector RX
 								}
-								if(((b->_estado==at_tcp_alrdy_cnntd_err)||(b->_estado==at_tcp_conectado)) && ModBUS_Check(b->_data2SND,b->_n_D2SND))//if((b->_estado==at_tcp_alrdy_cnntd_err)||(b->_estado==at_tcp_conectado))
+								//Send data when given conditions
+								/*if((b->_estado==at_tcp_alrdy_cnntd_err)||(b->_estado==at_tcp_conectado))
 								{
 									EnviarDatosSRVR(b);
 									b->_estado_conexion=TCP_SRVR_TX_EN_CURSO;
 									b->_estado=0;
 									b->_n_orig=0; //Borro el vector RX
-								}
-								if(b->_send_data==1) // SOLO HTTP     if((b->_send_data==1)&& ModBUS_Check(b->_data2SND,b->_n_D2SND))
+								}*/
+
+								if((b->_send_data==1)&&(b->_n_D2SND!=0)) //Check data availability after send process
 								{
 									EnviarDatosSRVR(b);
 									b->_estado_conexion=TCP_SRVR_TX_EN_CURSO;
@@ -1864,8 +1903,8 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							   (b->_estado!=at_tcp_snd_err)&&
 							   (b->_estado!=at_tcp_enviado_error)&&
 							   (b->_estado!=at_tcp_enviado_ok)&&
-							   (b->_estado!=22)&&(b->_estado!=25))//210630 Se agrega 11 y 12 //Se agrega 22 y 25, conexion cerrada y errore de serverif((b->_estado!=900)&&(b->_estado!=2)&&(b->_estado!=at_wifi_disconnect)&&(b->_estado!=at_tcp_desconectado)&&(b->_estado!=at_tcp_snd_err)&&(b->_estado!=at_tcp_enviado_error)&&(b->_estado!=at_tcp_enviado_ok))	//Si estoy conectando, no vuelvo a conectar.
-							{
+							   (b->_estado!=22)&&(b->_estado!=25)&&(b->_n_D2SND!=0))	//Check data availability after send process
+								{
 								EnviarDatosSRVR(b);
 									if(b->_enviaruart==1)
 										{
@@ -1897,6 +1936,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 							//----Condiciones de cambio de estado
 							if((b->_estado==at_tcp_enviado_ok)) b->_estado_conexion=TCP_SRVR_TX_OK;
+
 							if((b->_estado==at_error)||(b->_estado==at_restart)||
 							   (b->_estado==at_wifi_disconnect)||(b->_estado==at_wifi_connected)||
 							   (b->_estado==at_wifi_gotip)||(b->_estado==at_tcp_desconectado)||
@@ -1979,19 +2019,13 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 									b->_n_orig=0; //Borro el vector RX
 								}
 
-								if(((b->_new_data_rcv==1)||(b->_send_data==1))) // OJO SOLO CON HTTP if(((b->_new_data_rcv==1)||(b->_send_data==1))&& ModBUS_Check(b->_data2SND,b->_n_D2SND))
+								if(((b->_new_data_rcv==1)||(b->_send_data==1))&&(b->_n_D2SND!=0)) // Only send with data
 								{
-									/*if(b->_data2SND[10]==100)
-									{
-										b->_data2SND[10]=0x00;
-									}
-									b->_data2SND[10]++;*/
 									EnviarDatosSRVR(b);
 									b->_estado_conexion=TCP_SRVR_TX_EN_CURSO;
 									b->_estado=0;
 									b->_n_orig=0; //Borro el vector RX
 									b->_new_data_rcv=0;
-//220818
 									b->_send_data=0;
 								}
 
