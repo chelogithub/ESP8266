@@ -111,6 +111,8 @@
 #define TCP_SRVR_TX_OK 			909
 #define TCP_SRVR_TX_ERROR 		905
 
+#define at_busy_p				1000
+
 struct MBUS_FIFO
 {
 	uint8_t IDRX;	//
@@ -122,6 +124,8 @@ struct MBUS_FIFO
 
 struct WIFI
 {
+	GPIO_TypeDef  *RESET_PORT;		//Port for NSS
+	uint16_t RESET_PIN;				//Pin number
 	char _WF_Net[32];					//Nombre de la red WIFI  a conectaraurt
 	char _WF_Pass[16];					//Password de la red WIFI
 	char _TCP_Remote_Server_IP[16];			//IP del Servidor TCP
@@ -195,6 +199,7 @@ struct WIFI
 														6 - 
 */													
 };
+void HW_RESET(struct WIFI *a);
 void NOP(struct WIFI *a);
 void Cambiar_CWMODE(struct WIFI *a);
 void MUX(struct WIFI *a);
