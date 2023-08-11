@@ -105,11 +105,11 @@ a->_TCP_Local_Server_MSK[16]='\0';		//Mascara de red
 a->_TCP_Local_Server_Initiated=0;		//Servidor TCP no iniciado
 a->_estado=0;					//Estado de m�dulo WIFI
 a->_estado_rcv_data=0;			//Estado de Recepcion de datos
-a->_dataRCV[384]='\0';			//Data recibida por TCP   SOLO PARA EVITAR SOBREESCRITURA VALOR ORIGINAL 64 RESTRINGIR EN EL .C
+a->_dataRCV[512]='\0';			//Data recibida por TCP   SOLO PARA EVITAR SOBREESCRITURA VALOR ORIGINAL 64 RESTRINGIR EN EL .C
 a->_data2SND[64]='\0';			//Data a enviar por TCP
-a->_uart2snd[384]='\0';			//Datos a enviar por UART
-a->_uartRCVD[384]='\0';			//Datos recibidos de UART
-a->_uartRCVD_tok[384]='\0';		//Datos recibidos de UART
+a->_uart2snd[512]='\0';			//Datos a enviar por UART
+a->_uartRCVD[512]='\0';			//Datos recibidos de UART
+a->_uartRCVD_tok[512]='\0';		//Datos recibidos de UART
 a->_uartCHrcvd=0;				//Cantidad de caracteres recibidos por la uart
 a->_TCPchRCVD=0;				//Caracteres recibidos por TCP
 a->_enviaruart=0;				//Envia _uart2snd por puerto serie
@@ -157,7 +157,7 @@ int AT_ESP8266_ND( struct WIFI *a )
 		char finalizar[]={'"','\r','\n'};
 		char separador2[]={'"',','};
 		char finalizar2[]={'\r','\n'};
-		char vectorcopia[384];
+		char vectorcopia[512];
 	 //Agregar condicion de falla al conectar strcmp(a->_uartRCVD,"+CWJAP 1\r\n\r\nFAIL\r\n")
 	 //a->_estado=0;
 //--------BUSCO ERRRORES DE SOLPAMIENTO------------//
