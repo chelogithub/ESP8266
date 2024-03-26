@@ -192,6 +192,7 @@ struct WIFI
 	int  _debug_WF_GOTIP;
 	int	 _subpaso;
 	int  _overflowVector;			//Maximo tamaño del vector conproceso de +IPD
+	int  _NO_IP;					//No define IP cuando está en 1
 	int	 _DBG_EN;/*			1 - Conectar WIFI
 														2 - Desconectar WIFI
 														3 - Conectar TCP

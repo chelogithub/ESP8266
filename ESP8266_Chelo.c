@@ -1354,10 +1354,20 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 						b->_estado_conexion=CONEXION_EN_CURSO;
 						b->_estado=0;
 					}
+					if(b->_NO_IP==0)
+					{
+						IPDef(b);
+						b->_estado_conexion=DEF_IP_EN_CURSO;
+						b->_estado=0;
+					}
+					else
+					{
+						IPDef(b);
+						b->_estado_conexion=DEF_IP_OK;
+						b->_estado=0;
+					}
 
-					IPDef(b);
-					b->_estado_conexion=DEF_IP_EN_CURSO;
-					b->_estado=0;
+
 			}
 			break;
 			case DEF_IP_EN_CURSO:			//Definir IP
