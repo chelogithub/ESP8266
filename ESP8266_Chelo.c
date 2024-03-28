@@ -784,6 +784,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 
 				a->_pasos++;
 				if (((a->_enviaruart==0)&&((AT_decode==at_wifi_disconnect)||(AT_decode==at_wifi_connected)
+																		  ||(AT_decode==at_fail)
 																		  ||(AT_decode==at_wifi_gotip)
 																		  ||(AT_decode==at_tcp_alrdy_cnntd_err)
 																		  ||(AT_decode==at_tcp_conectado)
@@ -809,7 +810,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 
 
 
-				if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect))
+				if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect)||(AT_decode==at_fail))
 				{
 					a->_estado=AT_decode;
 					a->_instruccion=0;		//Finalizo la instrucci�n
@@ -863,6 +864,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 
 							if((a->_estado==700)&&((AT_decode==at_tcp_enviado_ok)||(a->_ticks > 5000)
 																				 ||(AT_decode==at_wifi_disconnect)
+																				 ||(AT_decode==at_fail)
 																				 ||(AT_decode==at_wifi_connected)
 																				 ||(AT_decode==at_wifi_gotip)
 																				 ||(AT_decode==at_tcp_desconectado)
@@ -930,7 +932,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			{
 					unsigned char caracteres[8]="";
 
-					if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect))
+					if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect)||(AT_decode==at_fail))
 				{
 					a->_estado=AT_decode;
 					a->_instruccion=0;		//Finalizo la instrucci�n
@@ -1172,7 +1174,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 					{
 						b->_estado_conexion=CONEXION_OK; 	//Ya puedo pedir conexi�n TCP
 					}
-				if((b->_estado==at_error)||(b->_estado==at_fail)||(b->_estado==at_conn_wifi_err)) b->_estado_conexion=CONEXION_ERROR; 	//Ya puedo pedir conexi�n TCP
+				if((b->_estado==at_error)||(b->_estado==at_fail)||(b->_estado==at_conn_wifi_err)||(b->_estado==at_wifi_disconnect)) b->_estado_conexion=CONEXION_ERROR; 	//Ya puedo pedir conexi�n TCP
 				//----Condiciones de cambio de estado
 			}
 			break;
@@ -1212,7 +1214,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 					b->_estado=0;
 				}
 
-				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok)) //Si me desconecto, me vuelvo a conectar
+				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok)||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 				{
 					ConectarWIFI(b);
 					b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1326,7 +1328,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 					b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 				}
-				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 				{
 					ConectarWIFI(b);
 					b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1348,7 +1350,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 						b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 					}
-					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 					{
 						ConectarWIFI(b);
 						b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1408,7 +1410,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 					b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 				}
-				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 				{
 					ConectarWIFI(b);
 					b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1430,7 +1432,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 						b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 					}
-					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 					{
 						ConectarWIFI(b);
 						b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1453,10 +1455,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 						b->_estado_conexion=CONEXION_EN_CURSO;//
 						b->_estado=0;//
 						b->_n_orig=0;// //Borro el vector RX
-						//CrearServidorTCP(b);
-						//b->_estado_conexion=TCP_SRVR_EN_CURSO;
-						//b->_estado=0;
-						//b->_n_orig=0; //Borro el vector RX
+
 					}
 			}
 			break;
@@ -1505,7 +1504,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 					b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 				}
-				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_tcp_noip_err)||(b->_estado==at_error)||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 				{
 					ConectarWIFI(b);
 					b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1513,7 +1512,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 					b->_n_orig=0; //Borro el vector RX
 				}
 
-				if((b->_estado==at_error)||(b->_estado==at_tcp_desconectado)||(b->_estado==at_tcp_alrdy_cnntd_err))	//Si se cierra la conexión vuelvo a conectar
+				if((b->_estado==at_tcp_desconectado)||(b->_estado==at_tcp_alrdy_cnntd_err))	//Si se cierra la conexión vuelvo a conectar
 				{
 					ConectarTCP(b);
 					b->_estado_conexion=TCP_CONN_EN_CURSO;
@@ -1535,7 +1534,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 						b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 					}
-					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 					{
 						ConectarWIFI(b);
 						b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1574,19 +1573,6 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 					if((b->_automatizacion >= WF_SEND)&&(b->_n_D2SND!=0))  // El envío por este medio es permanente
 					{	/*Ensure to have data before sending*/
 							EnviarDatos(b);
-							/*b->_data2SND[0]=0x00;//strcpy(wf._data2SND,"01;03;00;00;00;0A;C5;CD");//strcpy(wf._data2SND,"20;352;52#");
-							b->_data2SND[1]=0x00;
-							b->_data2SND[2]=0x00;
-							b->_data2SND[3]=0x00;
-							b->_data2SND[4]=0x00;
-							b->_data2SND[5]=0x06;
-							b->_data2SND[6]=0x01;
-							b->_data2SND[7]=0x03;
-							b->_data2SND[8]=0x00;//strcpy(wf._data2SND,"01;03;00;00;00;0A;C5;CD");//strcpy(wf._data2SND,"20;352;52#");
-							b->_data2SND[9]=0x00;
-							b->_data2SND[10]=0x00;
-							b->_data2SND[11]=0x0A;
-							b->_n_D2SND=12;*/
 					}
 						if(b->_enviaruart==1)
 							{
@@ -1615,6 +1601,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 				//----Condiciones de cambio de estado
 				if((b->_estado==at_tcp_enviado_ok)) b->_estado_conexion=TCP_SND_OK;
 				if((b->_estado==at_error)||(b->_estado==at_wifi_disconnect)
+										 ||(b->_estado==at_fail)
 										 ||(b->_estado==at_tcp_desconectado)
 										 ||(b->_estado==at_tcp_snd_err)
 										 ||(b->_estado==at_tcp_enviado_error))
@@ -1637,7 +1624,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 					b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 				}
-				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 				{
 					ConectarWIFI(b);
 					b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1677,7 +1664,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 						b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 					}
-					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 					{
 						ConectarWIFI(b);
 						b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1744,7 +1731,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 								b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 							}
-							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 							{
 								ConectarWIFI(b);
 								b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1784,7 +1771,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 								b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 							}
-							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 							{
 								ConectarWIFI(b);
 								b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1813,7 +1800,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 								b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 							}
-							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 							{
 								ConectarWIFI(b);
 								b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1842,7 +1829,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 								b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 							}
-							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 							{
 								ConectarWIFI(b);
 								b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1873,7 +1860,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 									b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 								}
-								if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+								if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 								{
 									ConectarWIFI(b);
 									b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1975,7 +1962,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 								b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 							}
-							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+							if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 							{
 								ConectarWIFI(b);
 								b->_estado_conexion=CONEXION_EN_CURSO;
@@ -2025,7 +2012,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 									b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 
 								}
-								if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )) //Si me desconecto, me vuelvo a conectar
+								if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
 								{
 									ConectarWIFI(b);
 									b->_estado_conexion=CONEXION_EN_CURSO;
