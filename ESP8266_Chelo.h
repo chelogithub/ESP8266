@@ -191,6 +191,8 @@ struct WIFI
 	int  _debug_WF_CNNCTD;
 	int  _debug_WF_GOTIP;
 	int	 _subpaso;
+	int  _overflowVector;			//Maximo tamaño del vector conproceso de +IPD
+	int  _NO_IP;					//No define IP cuando está en 1
 	int	 _DBG_EN;/*			1 - Conectar WIFI
 														2 - Desconectar WIFI
 														3 - Conectar TCP
@@ -199,11 +201,11 @@ struct WIFI
 														6 - 
 */													
 };
-void HW_RESET(struct WIFI *a);
-void NOP(struct WIFI *a);
-void Cambiar_CWMODE(struct WIFI *a);
-void MUX(struct WIFI *a);
-void IPDef(struct WIFI *a);
+void HW_RESET(struct WIFI *);
+void NOP(struct WIFI *);
+void Cambiar_CWMODE(struct WIFI *);
+void MUX(struct WIFI *);
+void IPDef(struct WIFI *);
 void ConectarWIFI(struct WIFI *);
 void DesconectarWIFI(struct WIFI *);
 void ConectarTCP(struct WIFI *);
