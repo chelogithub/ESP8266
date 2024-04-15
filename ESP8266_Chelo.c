@@ -637,7 +637,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_pasos=0;
 						a->_ejecucion=1;
 						//------Generacion del comando para desconectar---------//
-						strncat(a->_uart2snd,"AT+CWQAP\r\n",strlen("AT+CWQAP\r\n"));
+						strncat(a->_uart2snd,"AT+CWQAP\r\n",10);
 						a->_n_uart2SND=strlen(a->_uart2snd);
 						//------Generacion del comando para desconectar---------//
 						a->_estado=300;
