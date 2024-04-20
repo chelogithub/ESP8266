@@ -184,38 +184,35 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 
 	 a->_n_fcomp=strlen("\r\n+IPD");
 	 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n+IPD",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-	 {
+		 {
+			a->_n_fcomp=strlen("\r\n+IPD");
+			if(a->_TCP_Local_Server_EN==0)
+				{
+					a->_estado_data=FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n+IPD",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,TOKIPDDATA);
+				}
+				else
+				{
+					a->_estado_data=FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n+IPD",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,TOKIPDDATASRVR);
+				}
 
-	 	a->_n_fcomp=strlen("\r\n+IPD");
-	 	//a->_estado_data=0;
+			if(a->_estado_data==4)
+				{
+					a->_estado_rcv_data=99;
+					a->_n_dataRCV=a->_n_tok;
+					CopiaVector(a->_dataRCV,a->_uartRCVD_tok,a->_n_tok,0,'A');  //Solo copio la info si es correcta
+					CopiaVector(a->_data2SND,a->_uartRCVD_tok,5,0,'A');  //Solo copio la info si es correcta
 
-	 	if(a->_TCP_Local_Server_EN==0)
-	 	{
-	 		a->_estado_data=FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n+IPD",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,TOKIPDDATA);
-	 	}
-	 	else
-	 	{
-	 		a->_estado_data=FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n+IPD",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,TOKIPDDATASRVR);
-	 	}
-
-	 	if(a->_estado_data==4)
-	 	{
-	 		a->_estado_rcv_data=99;
-	 		a->_n_dataRCV=a->_n_tok;
-	 		CopiaVector(a->_dataRCV,a->_uartRCVD_tok,a->_n_tok,0,'A');  //Solo copio la info si es correcta
-	 		CopiaVector(a->_data2SND,a->_uartRCVD_tok,5,0,'A');  //Solo copio la info si es correcta
-
-	 		a->_debug_rx_ok++;
-	 		a->_new_data_rcv=1;
-	 	}
-	 	if(a->_estado_data==5)
-	 	{
-	 		a->_estado_rcv_data=55;
-	 		a->_n_dataRCV=0;
-	 		a->_debug_rx_no_ok++;
-	 		a->_new_data_rcv=1;
-	 	}
-	 }
+					a->_debug_rx_ok++;
+					a->_new_data_rcv=1;
+				}
+			if(a->_estado_data==5)
+				{
+					a->_estado_rcv_data=55;
+					a->_n_dataRCV=0;
+					a->_debug_rx_no_ok++;
+					a->_new_data_rcv=1;
+				}
+		 }
 
 	 //--------------------------------------------------------------------------------------------------------------//
 	 // 	Arranco preguntando por la sentencia OK, y luego busco otros string dentro de lo recibido     			 //
@@ -253,7 +250,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 		{
 		//------------------INTENTO DE CREACION SEVER YA CREADO ------------------//
 		a->_n_fcomp=strlen("no change\r\nOK\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"no change\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"CLOSED\r\n")==0)//Cerrado TCP desde la APP
+			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"no change\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 			{
 				AT_decode=at_tcp_srvr_ok_noch;
 			}
@@ -361,7 +358,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 				{
 				//------------------INTENTAR ENVIAR DATOS EN TCP CAIDO------------------//
 				a->_n_fcomp=strlen("link is not valid");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"link is not valid",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"CLOSED\r\n")==0)//Cerrado TCP desde la APP
+				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"link is not valid",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 					{
 						AT_decode=at_tcp_snd_err;
 					}
@@ -415,10 +412,6 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 					}
 				else
 				{
-
-
-
-
 				 }}}}}}}}}}}
 		}
 		else
@@ -436,7 +429,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			{
 			//------------------CLIENTE DESCONECTADO DEL SERVIDOR ------------------//
 			a->_n_fcomp=strlen(",CLOSED\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,",CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"CLOSED\r\n")==0)//Cerrado TCP desde la APP
+			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,",CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 				{
 					AT_decode=at_tcp_client_desc;
 					a->_debug_CLOSED++;
@@ -449,7 +442,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			//  enviar														  //
 			//-----------------------------------------------------------------//
 			a->_n_fcomp=strlen("CLOSED\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"CLOSED\r\n")==0)//Cerrado TCP desde la APP
+			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 				{
 					AT_decode=at_tcp_desconectado;
 				}
@@ -1586,8 +1579,10 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 				}
 						if((b->_estado==700)&&(b->_enviaruart==1)
 											&&(b->_estado!=at_error)
+											&&(b->_estado!=at_tcp_noip_err)
 											&&(b->_estado!=at_wifi_disconnect)
 											&&(b->_estado!=at_tcp_desconectado)
+											&&(b->_estado!=at_fail)		//240419
 											&&(b->_estado!=at_tcp_snd_err)
 											&&(b->_estado!=at_tcp_enviado_error))
 							{
@@ -1602,6 +1597,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 				if((b->_estado==at_tcp_enviado_ok)) b->_estado_conexion=TCP_SND_OK;
 				if((b->_estado==at_error)||(b->_estado==at_wifi_disconnect)
 										 ||(b->_estado==at_fail)
+										 ||(b->_estado==at_tcp_noip_err)
 										 ||(b->_estado==at_tcp_desconectado)
 										 ||(b->_estado==at_tcp_snd_err)
 										 ||(b->_estado==at_tcp_enviado_error))
@@ -1624,7 +1620,11 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 					b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 				}
-				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
+				if((b->_estado==at_wifi_disconnect)
+						||(b->_estado==at_deconectar_ok )
+						||(b->_estado==at_fail)
+						||(b->_estado!=at_error)
+						||(b->_estado!=at_tcp_noip_err)) //Si me desconecto, me vuelvo a conectar 240419
 				{
 					ConectarWIFI(b);
 					b->_estado_conexion=CONEXION_EN_CURSO;
