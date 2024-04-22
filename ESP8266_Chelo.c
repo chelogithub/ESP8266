@@ -180,7 +180,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 //------------------PREGUNTO RECEPCION DE DATOS------------------//
 //***************************************************************//
 
-	 // Si tiene datos recibidos los proceso y dejo el vector original
+	 // Si tiene datos recibidos los +IPD proceso y dejo el vector original
 
 	 a->_n_fcomp=strlen("\r\n+IPD");
 	 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n+IPD",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
@@ -220,99 +220,97 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 	 a->_n_fcomp=strlen("OK\r\n");
 	if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"OK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 	{
-
 		AT_decode=at_ok;
-
 		//------------------CONFIRMO ENVIO DE INFO OK ------------------//
-		a->_n_fcomp=strlen("\r\nSEND");
-		 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nSEND",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Transmision ok
+		a->_n_fcomp=strlen("\r\nSEND OK\r\n");
+		 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nSEND OK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Transmision ok
 			 {
 			 AT_decode=at_tcp_enviado_ok;
 			 a->_debug_SEND_OK++;
 			 }
 		 else
 		 {
-		//------------------CONFIRMO CIERRE DE  CONEXION------------------//
-		a->_n_fcomp=strlen("AT+CWQAP");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWQAP",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+			//------------------CONFIRMO CIERRE DE  CONEXION------------------//
+			a->_n_fcomp=strlen("AT+CWQAP");
+			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWQAP",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+				{
+				AT_decode=at_deconectar_ok;
+				}
+			else
 			{
-			AT_decode=at_deconectar_ok;
-			}
-		else
-		{
-		//------------------CAMBIAR MODO DE FUNCIONAMIENTO------------------//
-		a->_n_fcomp=strlen("AT+CWMODE=");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWMODE=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
-			{
-				AT_decode=at_cambiar_modo_ok;
-			}
-		else
-		{
-		//------------------INTENTO DE CREACION SEVER YA CREADO ------------------//
-		a->_n_fcomp=strlen("no change\r\nOK\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"no change\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-			{
-				AT_decode=at_tcp_srvr_ok_noch;
-			}
-		else
-		{
-		//------------------OK PARA ENVIAR------------------//
-		a->_n_fcomp=strlen("\r\n>");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n>",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
-			{
-				AT_decode=at_tcp_ok_to_send;
-			}
-		else
-		{
-		//------------------OK SERVIDOR------------------//
-		a->_n_fcomp=strlen("AT+CIPSERVER");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSERVER",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-		{
-			AT_decode=at_tcp_srvr_ok;
-		}
-		else
-		{
-		//------------------DESCONECTAR TCP CUANDOYA EST� DESCONECTADO------------------//
-		a->_n_fcomp=strlen("AT+CIPCLOSE");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPCLOSE",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-			{
-				AT_decode=at_tcp_closed_ok;
-			}
-		else
-		{
-		//------------------DEFIIR MULTIPLES CONEXIONES OK------------------//
-		a->_n_fcomp=strlen("AT+CIPMUX=1");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=1",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-			{
-				AT_decode=at_multiple_conn_ok;
-			}
-		else
-		{
-		//------------------DEFIIR NO MULTIPLES CONEXIONES OK------------------//
-		a->_n_fcomp=strlen("AT+CIPMUX=0");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=0",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-			{
-				AT_decode=at_no_multiple_conn_ok;
-			}
-		else
-		{
-		//------------------DEFIIR IP OK------------------//
-		a->_n_fcomp=strlen("AT+CIPSTA=");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSTA=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-			{
-				AT_decode=at_def_ip_ok;
-			}
-		else
-		{
-		//------------------TCP CONECTADO------------------//
-		a->_n_fcomp=strlen("CONNECT");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CONNECT",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
-			{
-			AT_decode=at_tcp_conectado;
-			}
-		else
-		{
-			}}}}}}}}}}}
+				//------------------CAMBIAR MODO DE FUNCIONAMIENTO------------------//
+				a->_n_fcomp=strlen("AT+CWMODE=");
+				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWMODE=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
+					{
+						AT_decode=at_cambiar_modo_ok;
+					}
+				else
+				{
+					//------------------INTENTO DE CREACION SEVER YA CREADO ------------------//
+					a->_n_fcomp=strlen("no change\r\nOK\r\n");
+						if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"no change\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+						{
+							AT_decode=at_tcp_srvr_ok_noch;
+						}
+					else
+					{
+						//------------------OK PARA ENVIAR------------------//
+						a->_n_fcomp=strlen("\r\n>");
+						if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n>",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+							{
+								AT_decode=at_tcp_ok_to_send;
+							}
+						else
+						{
+							//------------------OK SERVIDOR------------------//
+							a->_n_fcomp=strlen("AT+CIPSERVER");
+							if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSERVER",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+							{
+								AT_decode=at_tcp_srvr_ok;
+							}
+							else
+							{
+								//------------------DESCONECTAR TCP CUANDOYA EST� DESCONECTADO------------------//
+								a->_n_fcomp=strlen("AT+CIPCLOSE");
+								if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPCLOSE",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+									{
+										AT_decode=at_tcp_closed_ok;
+									}
+								else
+								{
+									//------------------DEFIIR MULTIPLES CONEXIONES OK------------------//
+									a->_n_fcomp=strlen("AT+CIPMUX=1");
+									if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=1",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+										{
+											AT_decode=at_multiple_conn_ok;
+										}
+									else
+									{
+										//------------------DEFIIR NO MULTIPLES CONEXIONES OK------------------//
+										a->_n_fcomp=strlen("AT+CIPMUX=0");
+										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=0",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+											{
+												AT_decode=at_no_multiple_conn_ok;
+											}
+										else
+										{
+											//------------------DEFIIR IP OK------------------//
+											a->_n_fcomp=strlen("AT+CIPSTA=");
+											if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSTA=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+												{
+													AT_decode=at_def_ip_ok;
+												}
+											else
+											{
+										//------------------TCP CONECTADO------------------//
+										a->_n_fcomp=strlen("CONNECT");
+										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CONNECT",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+											{
+											AT_decode=at_tcp_conectado;
+											}
+										else
+										{
+											}}}}}}}}}}}
 
 	}
 	else
@@ -320,211 +318,230 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 	//--------------------------------------------------------------------------------------------------------------//
 	// 	Continuo preguntando por la sentencia ERROR, y luego busco otros string dentro de lo recibido     			 //
 	//--------------------------------------------------------------------------------------------------------------//
-		 a->_n_fcomp=strlen("ERROR\r\n");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"ERROR\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+		 a->_n_fcomp=strlen("ERROR\r\nCLOSED\r\n");
+		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"ERROR\r\nCLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 		{
-				AT_decode=at_error;
+				AT_decode=at_tcp_conn_err;
 				//------------------TCP CAIDO AL INTENTAR CONECTAR------------------//
-				a->_n_fcomp=strlen("CLOSED\r\n");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Intentando conectar con servidor TCP caido
-				{
-						AT_decode=at_tcp_conn_err;
-				}
-				 else
-				 {
+				a->_n_fcomp=strlen("ERROR\r\nCLOSED\r\n");
+		}
+		else
+		{
+			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"ERROR",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Intentando conectar con servidor TCP caido
+			{
+					AT_decode=at_error;
+			}
+			 else
+			 {
 				//------------------CONECTAR TCP YA CONECTADO------------------//
 				a->_n_fcomp=strlen("\r\nALREADY CONNECTED\r\n");
 				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nALREADY CONNECTED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
 				{
-					 	AT_decode=at_tcp_alrdy_cnntd_err;
+						AT_decode=at_tcp_alrdy_cnntd_err;
 				}
 				else
 				{
-				//------------------OK PARA ENVIAR------------------//
-				a->_n_fcomp=strlen("AT+CIPSERVER");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSERVER",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-				{
-					AT_decode=at_tcp_srvr_err;
+					//------------------OK PARA ENVIAR------------------//
+					a->_n_fcomp=strlen("AT+CIPSERVER");
+					if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSERVER",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+					{
+						AT_decode=at_tcp_srvr_err;
+					}
+					else
+					{
+						//------------------DESCONECTAR TCP CUANDOYA EST� DESCONECTADO------------------//
+						a->_n_fcomp=strlen("AT+CIPCLOSE");
+						if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPCLOSE",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
+							{
+								AT_decode=at_tcp_close_err;
+							}
+						else
+							{
+							//------------------INTENTAR ENVIAR DATOS EN TCP CAIDO------------------//
+							a->_n_fcomp=strlen("link is not valid");
+							if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"link is not valid",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+								{
+									AT_decode=at_tcp_snd_err;
+								}
+							else
+								{
+								//------------------CAMBIAR MODO DE FUNCIONAMIENTO------------------//
+								a->_n_fcomp=strlen("AT+CWMODE=");
+								if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWMODE=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
+									{
+										AT_decode=at_cambiar_modo_err;
+									}
+								else
+								{
+									//------------------DEFIIR MULTIPLES CONEXIONES OK------------------//
+									a->_n_fcomp=strlen("AT+CIPMUX=1");
+									if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=1",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+										{
+											AT_decode=at_multiple_conn_err;
+										}
+									else
+									{
+										//------------------DEFIIR NO MULTIPLES CONEXIONES OK------------------//
+										a->_n_fcomp=strlen("AT+CIPMUX=0");
+										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=0",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+											{
+												//AT_decode=at_no_multiple_conn_err;
+											}
+										else
+										{
+											//------------------ERROR AL CONECTAR WIFI------------------//
+											a->_n_fcomp=strlen("AT+CWJAP");
+											if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWJAP",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+												{
+													AT_decode=at_conn_wifi_err;
+												}
+											else
+											{
+												//------------------ERROR AL CONECTAR WIFI------------------//
+												a->_n_fcomp=strlen("AT+CIPSTA=");
+												if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSTA=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+													{
+														AT_decode=at_def_ip_err;
+													}
+												else
+												{
+													//------------------ERROR AL CONECTAR WIFI------------------//
+													a->_n_fcomp=strlen("no ip");
+													if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"no ip",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+														{
+															AT_decode=at_tcp_noip_err;  //PROCESAR
+														}
+													else
+													{
+
+														 //--------------------------------------------------------------------------------------------------------------//
+														 // 	Continuo preguntando por las string individuales, los que nos tienen datos comunes		     			 //
+														 //--------------------------------------------------------------------------------------------------------------//
+														a->_n_fcomp=strlen("WIFI DISCONNECT");
+														if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI DISCONNECT",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"WIFI DISCONNECT\r\n\r\nOK\r\n")==0)//WIFI DESCONECTADA
+															{
+																 AT_decode=at_wifi_disconnect;
+																 a->_debug_WF_DISCONNECT++;
+															}
+														else
+														{
+															//------------------CLIENTE DESCONECTADO DEL SERVIDOR ------------------//
+															a->_n_fcomp=strlen(",CLOSED\r\n");
+															if (FT_String_ND(a->_uartRCVD,&a->_n_orig,",CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+																{
+																	AT_decode=at_tcp_client_desc;
+																	a->_debug_CLOSED++;
+																}
+															else
+															{
+																//------------------TCP CAIDO DESPUES DE CONECTADO------------------//
+																// En el envío contínuo el CLOSED se concatena con el SEND OK y si //
+																// primero ve el SEND OKse queda en el estado 705 por error al     //
+																//  enviar														  //
+																//-----------------------------------------------------------------//
+																a->_n_fcomp=strlen("CLOSED\r\n");
+																if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+																	{
+																		AT_decode=at_tcp_desconectado;
+																	}
+																else
+																{
+
+																	//------------------ENVIADO = RECIBIDO ------------------//
+																	if (FT_String_ND(a->_uartRCVD,&a->_n_orig,a->_uart2snd,&a->_n_cmp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,a->_uart2snd)==0)//Recibo OK para transmitir
+																		 {
+																			if (a->_uartRCVD[0] != '\0') //Borro el vector de recepción
+																				{
+																				//AT_decode=10;
+																				a->_n_orig=0;
+																				}
+																			}
+																	else
+																	{
+																		//------------------PAQUETE ENVIADO EN FALLA--------------//
+																		a->_n_fcomp=strlen("\r\nSEND FAIL\r\n");
+																		 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nSEND FAIL\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"\r\nSEND OK\r\n")==0)//Transmision ok
+																			{
+																			 AT_decode=at_tcp_enviado_error;
+																			 a->_debug_FAIL++;
+																			}
+																		 else
+																		 {
+
+
+
+																			//------------------OBTENCI�N DE IP------------------//
+																			// vienen concatenadas no logra ver el GOT IP se queda en el WIFI CONNECTED
+																			a->_n_fcomp=strlen("WIFI GOT IP\r\n");
+																			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI GOT IP\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Obtiene IP
+																				{
+																					a->_debug_WF_GOTIP++;
+																					AT_decode=at_wifi_gotip;
+																				}
+																			else
+																			{
+																					//------------------WIFI CONECTADA------------------//
+																				a->_n_fcomp=strlen("WIFI CONNECTED");
+																				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI CONNECTED",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//WIFI CONECTADA
+																					{
+																						a->_debug_WF_CNNCTD++;
+																							 AT_decode=at_wifi_connected;
+																						//Cuando se cuelga por falla de alimentación queda acá, si es que el módulo
+																						//llega a responder nuevamnte.
+																					}
+																				else
+																				{
+
+																					//------------------CLIENTE TCP CONECTADO------------------//
+																					a->_n_fcomp=strlen(",CONNECT\r\n");
+																					if (FT_String_ND(a->_uartRCVD,&a->_n_orig,",CONNECT\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+																						  {
+																							  AT_decode=at_tcp_client_conectado;
+																							  a->_debug_CONNECT++;
+																						  }
+																					else
+																					{
+
+																						//------------------FALLA------------------//
+																						a->_n_fcomp=strlen("\r\nFAIL\r\n");
+																							if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nFAIL\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+																							{
+																								AT_decode=at_fail;
+																							}
+																						else
+																						{
+																						//------------------busy processing------------------//
+																							a->_n_fcomp=strlen("busy p...");
+																							if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"busy p...",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+																								{
+																								AT_decode=at_busy_p;
+																								}
+																							else
+																							{
+
+																							}
+																						}
+																					}
+																				}
+																			}
+																		 }
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
-				else
-				{
-				//------------------DESCONECTAR TCP CUANDOYA EST� DESCONECTADO------------------//
-				a->_n_fcomp=strlen("AT+CIPCLOSE");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPCLOSE",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
-					{
-						AT_decode=at_tcp_close_err;
-					}
-				else
-				{
-				//------------------INTENTAR ENVIAR DATOS EN TCP CAIDO------------------//
-				a->_n_fcomp=strlen("link is not valid");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"link is not valid",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-					{
-						AT_decode=at_tcp_snd_err;
-					}
-				else
-				{
-				//------------------CAMBIAR MODO DE FUNCIONAMIENTO------------------//
-				a->_n_fcomp=strlen("AT+CWMODE=");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWMODE=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
-					{
-						AT_decode=at_cambiar_modo_err;
-					}
-				else
-				{
-				//------------------DEFIIR MULTIPLES CONEXIONES OK------------------//
-				a->_n_fcomp=strlen("AT+CIPMUX=1");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=1",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-					{
-						AT_decode=at_multiple_conn_err;
-					}
-				else
-				{
-				//------------------DEFIIR NO MULTIPLES CONEXIONES OK------------------//
-				a->_n_fcomp=strlen("AT+CIPMUX=0");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=0",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-					{
-						AT_decode=at_no_multiple_conn_err;
-					}
-				else
-				{
-				//------------------ERROR AL CONECTAR WIFI------------------//
-				a->_n_fcomp=strlen("AT+CWJAP");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWJAP",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-					{
-						AT_decode=at_conn_wifi_err;
-					}
-				else
-				{
-				//------------------ERROR AL CONECTAR WIFI------------------//
-				a->_n_fcomp=strlen("AT+CIPSTA=");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPSTA=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-					{
-						AT_decode=at_def_ip_err;
-					}
-				else
-				{
-				//------------------ERROR AL CONECTAR WIFI------------------//
-				a->_n_fcomp=strlen("no ip");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"no ip",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-					{
-						AT_decode=at_tcp_noip_err;  //PROCESAR
-					}
-				else
-				{
-				 }}}}}}}}}}}
+			 }
 		}
-		else
-		{
-			 //--------------------------------------------------------------------------------------------------------------//
-			 // 	Continuo preguntando por las string individuales, los que nos tienen datos comunes		     			 //
-			 //--------------------------------------------------------------------------------------------------------------//
-			a->_n_fcomp=strlen("WIFI DISCONNECT");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI DISCONNECT",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"WIFI DISCONNECT\r\n\r\nOK\r\n")==0)//WIFI DESCONECTADA
-				{
-					 AT_decode=at_wifi_disconnect;
-					 a->_debug_WF_DISCONNECT++;
-				}
-			else
-			{
-			//------------------CLIENTE DESCONECTADO DEL SERVIDOR ------------------//
-			a->_n_fcomp=strlen(",CLOSED\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,",CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-				{
-					AT_decode=at_tcp_client_desc;
-					a->_debug_CLOSED++;
-				}
-			else
-			{
-			//------------------TCP CAIDO DESPUES DE CONECTADO------------------//
-			// En el envío contínuo el CLOSED se concatena con el SEND OK y si //
-			// primero ve el SEND OKse queda en el estado 705 por error al     //
-			//  enviar														  //
-			//-----------------------------------------------------------------//
-			a->_n_fcomp=strlen("CLOSED\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-				{
-					AT_decode=at_tcp_desconectado;
-				}
-			else
-			{
-
-			//------------------ENVIADO = RECIBIDO ------------------//
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,a->_uart2snd,&a->_n_cmp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,a->_uart2snd)==0)//Recibo OK para transmitir
-				 {
-				 	if (a->_uartRCVD[0] != '\0') //Borro el vector de recepción
-				 		{
-				 		//AT_decode=10;
-				 		a->_n_orig=0;
-				 		}
-				 	}
-			else
-			{
-			//------------------PAQUETE ENVIADO EN FALLA--------------//
-			a->_n_fcomp=strlen("\r\nSEND FAIL\r\n");
-			 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nSEND FAIL\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"\r\nSEND OK\r\n")==0)//Transmision ok
-			 	{
-			 	 AT_decode=at_tcp_enviado_error;
-			 	 a->_debug_FAIL++;
-			 	}
-			 else
-			 {
-
-
-
-			//------------------OBTENCI�N DE IP------------------//
-			// vienen concatenadas no logra ver el GOT IP se queda en el WIFI CONNECTED
-			a->_n_fcomp=strlen("WIFI GOT IP\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI GOT IP\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Obtiene IP
-				{
-					a->_debug_WF_GOTIP++;
-					AT_decode=at_wifi_gotip;
-				}
-			else
-			{
-				//------------------WIFI CONECTADA------------------//
-			a->_n_fcomp=strlen("WIFI CONNECTED");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI CONNECTED",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//WIFI CONECTADA
-				{
-					a->_debug_WF_CNNCTD++;
-						 AT_decode=at_wifi_connected;
-					//Cuando se cuelga por falla de alimentación queda acá, si es que el módulo
-					//llega a responder nuevamnte.
-				}
-			else
-			{
-
-			//------------------CLIENTE TCP CONECTADO------------------//
-			a->_n_fcomp=strlen(",CONNECT\r\n");
-			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,",CONNECT\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
-				  {
-					  AT_decode=at_tcp_client_conectado;
-					  a->_debug_CONNECT++;
-				  }
-			else
-			{
-
-			//------------------FALLA------------------//
-			a->_n_fcomp=strlen("\r\nFAIL\r\n");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nFAIL\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
-				{
-					AT_decode=at_fail;
-				}
-			else
-			{
-			//------------------busy processing------------------//
-				a->_n_fcomp=strlen("busy p...");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"busy p...",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
-					{
-					AT_decode=at_busy_p;
-					}
-				else
-				{
-
-			}
-
-		}}}}}}}}}}
-	}
+}
 
  //Eval�o todo lo recibido desde el puerto serie
 
@@ -803,7 +820,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 
 
 
-				if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect)||(AT_decode==at_fail))
+				if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect)||(AT_decode==at_fail)
+						||(AT_decode==at_error))//240420
 				{
 					a->_estado=AT_decode;
 					a->_instruccion=0;		//Finalizo la instrucci�n
@@ -1305,7 +1323,10 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 				//----Condiciones de cambio de estado
 				if((b->_estado==at_ok)||(b->_estado==at_multiple_conn_ok)||(b->_estado==at_no_multiple_conn_ok)) b->_estado_conexion=MUX_CONN_OK;
-				if((b->_estado==at_error)||(b->_estado==at_multiple_conn_err)||(b->_estado==at_no_multiple_conn_err)) b->_estado_conexion=MUX_CONN_ERROR;
+				if((b->_estado==at_error)||(b->_estado==at_multiple_conn_err)||(b->_estado==at_no_multiple_conn_err))
+					{
+					b->_estado_conexion=MUX_CONN_ERROR;
+					}
 				//----Condiciones de cambio de estado
 			}
 			break;
