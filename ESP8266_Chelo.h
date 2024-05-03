@@ -140,6 +140,7 @@ struct WIFI
 	int	 _estado;					//Estado de m�dulo WIFI
 	int  _estado_conexion;			//Estado de la conexion del m�dulo
 	int  _estado_rcv_data;			//Estado de Recepcion de datos
+	int  _estado_old;
 	char _dataRCV[512];	//char _dataRCV[384];				//Data recibida por TCP   SOLO PARA EVITAR SOBREESCRITURA VALOR ORIGINAL 64 RESTRINGIR EN EL .C
 	char _data2SND[512];//char _data2SND[384];				//Data a enviar por TCP
 	char _uart2snd[512];//char _uart2snd[384];			//Datos a enviar por UART
@@ -156,6 +157,8 @@ struct WIFI
 	char _okenvio[512];//char _okenvio[384];				//String para enviao de datos, comparacion de enviado y recibido strings variables
 	int  _ticks;
 	int  _ticks2;
+	int  _wtchdog;					//Monitoreo de actividad del módulo
+	int  _rst_rq;					//pedido de reset
 	int	 _debug;					//utilizada par fines de debugging
 	int	 _debug_str;				//utilizada par fines de debugging
 	int  _debug_pos;				//utilizada par fines de debugging
