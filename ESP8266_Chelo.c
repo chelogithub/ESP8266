@@ -15,10 +15,7 @@
 #include "ModBUS_Chelo.h"
 #include "main.h"
 
-
-
-
-//No se puede quedar esperano en las funciones, hay que detectar a situaci�n y salir del bucle.
+//No se puede quedar esperando en las funciones, hay que detectar a situaci�n y salir del bucle.
 //pensar que solo entra cuando recibe datos, si no vuelve a entrar queda ah� eternamentes.
 void HW_RESET(struct WIFI *a)
 {
@@ -242,7 +239,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 				a->_n_fcomp=strlen("AT+CWMODE=1\r\n\r\nOK\r\n");
 				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWMODE=1\r\n\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
 					{
-						AT_decode=at_cambiar_modo_ok;
+						AT_decode=at_cambiar_modo1_ok;
 					}
 				else
 				{
@@ -303,8 +300,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 											else
 											{
 										//------------------TCP CONECTADO------------------//
-										a->_n_fcomp=strlen("CONNECT");
-										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CONNECT",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+										a->_n_fcomp=strlen("\r\nCONNECT\r\n\r\nOK\r\n");
+										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nCONNECT\r\n\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
 											{
 											AT_decode=at_tcp_conectado;
 											}
@@ -318,12 +315,12 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 	//--------------------------------------------------------------------------------------------------------------//
 	// 	Continuo preguntando por la sentencia ERROR, y luego busco otros string dentro de lo recibido     			 //
 	//--------------------------------------------------------------------------------------------------------------//
-		 a->_n_fcomp=strlen("ERROR\r\nCLOSED\r\n");
-		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"ERROR\r\nCLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+		 a->_n_fcomp=strlen("\r\n\r\nERROR\r\nCLOSED\r\n");
+		if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n\r\nERROR\r\nCLOSED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 		{
 				AT_decode=at_tcp_conn_err;
 				//------------------TCP CAIDO AL INTENTAR CONECTAR------------------//
-				a->_n_fcomp=strlen("ERROR\r\nCLOSED\r\n");
+				a->_n_fcomp=strlen("\r\n\r\nERROR\r\nCLOSED\r\n");
 		}
 		else
 		{
@@ -334,8 +331,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			 else
 			 {
 				//------------------CONECTAR TCP YA CONECTADO------------------//
-				a->_n_fcomp=strlen("\r\nALREADY CONNECTED\r\n");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nALREADY CONNECTED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
+				a->_n_fcomp=strlen("\r\nALREADY CONNECTED\r\n\r\nERROR\r\n");
+				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nALREADY CONNECTED\r\n\r\nERROR\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
 				{
 						AT_decode=at_tcp_alrdy_cnntd_err;
 				}
@@ -358,8 +355,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						else
 							{
 							//------------------INTENTAR ENVIAR DATOS EN TCP CAIDO------------------//
-							a->_n_fcomp=strlen("link is not valid");
-							if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"link is not valid",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+							a->_n_fcomp=strlen("\r\nlink is not valid\r\n\r\nERROR\r\n");
+							if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nlink is not valid\r\n\r\nERROR\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 								{
 									AT_decode=at_tcp_snd_err;
 								}
@@ -406,8 +403,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 												else
 												{
 													//------------------ERROR AL CONECTAR WIFI------------------//
-													a->_n_fcomp=strlen("no ip");
-													if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"no ip",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+													a->_n_fcomp=strlen("\r\nno ip\r\n\r\nERROR\r\n");
+													if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nno ip\r\n\r\nERROR\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 														{
 															AT_decode=at_tcp_noip_err;  //PROCESAR
 														}
@@ -417,8 +414,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 														 //--------------------------------------------------------------------------------------------------------------//
 														 // 	Continuo preguntando por las string individuales, los que nos tienen datos comunes		     			 //
 														 //--------------------------------------------------------------------------------------------------------------//
-														a->_n_fcomp=strlen("WIFI DISCONNECT");
-														if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI DISCONNECT",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"WIFI DISCONNECT\r\n\r\nOK\r\n")==0)//WIFI DESCONECTADA
+														a->_n_fcomp=strlen("WIFI DISCONNECT\r\n");
+														if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI DISCONNECT\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"WIFI DISCONNECT\r\n\r\nOK\r\n")==0)//WIFI DESCONECTADA
 															{
 																 AT_decode=at_wifi_disconnect;
 																 a->_debug_WF_DISCONNECT++;
@@ -459,8 +456,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 																	else
 																	{
 																		//------------------PAQUETE ENVIADO EN FALLA--------------//
-																		a->_n_fcomp=strlen("\r\nSEND FAIL\r\n");
-																		 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nSEND FAIL\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"\r\nSEND OK\r\n")==0)//Transmision ok
+																		a->_n_fcomp=strlen("\r\n\r\nSEND FAIL\r\n");
+																		 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n\r\nSEND FAIL\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//if (strcmp(a->_uartRCVD,"\r\nSEND OK\r\n")==0)//Transmision ok
 																			{
 																			 AT_decode=at_tcp_enviado_error;
 																			 a->_debug_FAIL++;
@@ -472,8 +469,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 
 																			//------------------OBTENCI�N DE IP------------------//
 																			// vienen concatenadas no logra ver el GOT IP se queda en el WIFI CONNECTED
-																			a->_n_fcomp=strlen("WIFI GOT IP\r\n");
-																			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI GOT IP\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Obtiene IP
+																			a->_n_fcomp=strlen("WIFI GOT IP\r\n\r\nOK\r\n");
+																			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI GOT IP\r\n\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Obtiene IP
 																				{
 																					a->_debug_WF_GOTIP++;
 																					AT_decode=at_wifi_gotip;
@@ -481,8 +478,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 																			else
 																			{
 																					//------------------WIFI CONECTADA------------------//
-																				a->_n_fcomp=strlen("WIFI CONNECTED");
-																				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI CONNECTED",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//WIFI CONECTADA
+																				a->_n_fcomp=strlen("WIFI CONNECTED\r\n");
+																				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"WIFI CONNECTED\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//WIFI CONECTADA
 																					{
 																						a->_debug_WF_CNNCTD++;
 																							 AT_decode=at_wifi_connected;
@@ -565,7 +562,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_estado=100;
 						}
 				a->_pasos++;
-				if (((a->_enviaruart==0)&&((AT_decode==at_ok)||(AT_decode==at_cambiar_modo_ok)
+				if (((a->_enviaruart==0)&&((AT_decode==at_ok)||(AT_decode==at_cambiar_modo1_ok)
 															 ||(AT_decode==at_error)
 															 ||(AT_decode==at_restart)
 															 ||(AT_decode==at_wifi_connected)
@@ -1080,7 +1077,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			case CAMBIAR_MODO_EN_CURSO:			//WIFI Desconectado --> Conectar a WIFI nuevamente
 			{
 				if((b->_estado!=100)&&(b->_estado!=at_ok)
-									&&(b->_estado!=at_cambiar_modo_ok)
+									&&(b->_estado!=at_cambiar_modo1_ok)
 									&&(b->_estado!=at_error)
 									&&(b->_estado!=at_restart)
 									&&(b->_estado!=at_tcp_enviado_ok))	//Si estoy conectando, no vuelvo a conectar.
@@ -1106,7 +1103,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 				{
 					//----Condiciones de cambio de estado
 					if((b->_estado==at_ok)||
-					   (b->_estado==at_cambiar_modo_ok))
+					   (b->_estado==at_cambiar_modo1_ok))
 						{
 						b->_estado_conexion=CAMBIAR_MODO_OK; 	//Cambio de estado exitoso
 						}
