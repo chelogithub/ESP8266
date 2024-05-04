@@ -95,10 +95,12 @@
 #define TCP_CONN_EN_CURSO 		600
 #define TCP_CONN_OK 			609
 #define TCP_CONN_ERROR 			605
+#define TCP_CONN_ERROR_WIFI		607
 
 #define TCP_SND_EN_CURSO 		700
 #define TCP_SND_OK 				709
 #define TCP_SND_ERROR 			705
+#define TCP_SND_ERROR_TCP		707
 
 #define TCP_SRVR_EN_CURSO 		800
 #define TCP_SRVR_OK 			809

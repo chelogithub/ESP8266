@@ -180,7 +180,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 //------------------PREGUNTO RECEPCION DE DATOS------------------//
 //***************************************************************//
 
-	 // Si tiene datos recibidos los +IPD proceso y dejo el vector original
+	 // Si tiene datos recibidos los +IPD proceso = saco lo correspondiente al +IPD a->_uartRCVD_tok y dejo el vector original a->_uartRCVD
 
 	 a->_n_fcomp=strlen("\r\n+IPD");
 	 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n+IPD",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
@@ -217,13 +217,13 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 	 //--------------------------------------------------------------------------------------------------------------//
 	 // 	Arranco preguntando por la sentencia OK, y luego busco otros string dentro de lo recibido     			 //
 	 //--------------------------------------------------------------------------------------------------------------//
-	 a->_n_fcomp=strlen("OK\r\n");
-	if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"OK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+	 a->_n_fcomp=strlen("\r\nOK\r\n");
+	if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 	{
 		AT_decode=at_ok;
 		//------------------CONFIRMO ENVIO DE INFO OK ------------------//
-		a->_n_fcomp=strlen("\r\nSEND OK\r\n");
-		 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nSEND OK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Transmision ok
+		a->_n_fcomp=strlen("\r\n\r\nSEND OK\r\n");
+		 if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n\r\nSEND OK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Transmision ok
 			 {
 			 AT_decode=at_tcp_enviado_ok;
 			 a->_debug_SEND_OK++;
@@ -239,8 +239,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			else
 			{
 				//------------------CAMBIAR MODO DE FUNCIONAMIENTO------------------//
-				a->_n_fcomp=strlen("AT+CWMODE=");
-				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWMODE=",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
+				a->_n_fcomp=strlen("AT+CWMODE=1\r\n\r\nOK\r\n");
+				if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CWMODE=1\r\n\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Error desconectar TCP ya desconectado
 					{
 						AT_decode=at_cambiar_modo_ok;
 					}
@@ -255,8 +255,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 					else
 					{
 						//------------------OK PARA ENVIAR------------------//
-						a->_n_fcomp=strlen("\r\n>");
-						if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n>",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+						a->_n_fcomp=strlen("\r\n\r\nOK\r\n>");
+						if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\n\r\nOK\r\n>",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
 							{
 								AT_decode=at_tcp_ok_to_send;
 							}
@@ -287,8 +287,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 									else
 									{
 										//------------------DEFIIR NO MULTIPLES CONEXIONES OK------------------//
-										a->_n_fcomp=strlen("AT+CIPMUX=0");
-										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=0",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
+										a->_n_fcomp=strlen("AT+CIPMUX=0\r\n\r\nOK\r\n");
+										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"AT+CIPMUX=0\r\n\r\nOK\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
 											{
 												AT_decode=at_no_multiple_conn_ok;
 											}
