@@ -21,54 +21,82 @@
 #define TOKIPDDATA 4
 #define TOKIPDDATASRVR 5
 //------------------------- PARA Comandos AT		 -------------------------//
-#define at_ok 			   		1	//OK
-#define at_cambiar_modo_ok 		28	//AT+CWMODE
-#define at_deconectar_ok   		13	//AT+CWQAP
-#define at_multiple_conn_ok 	7	//AT+CIPMUX=1
-#define at_no_multiple_conn_ok 	8	//AT+CIPMUX=0
-#define at_def_ip_ok	    	27	//AT+CIPSTA=
-#define at_tcp_conectado		15	// CONNECT
-#define at_tcp_ok_to_send		20	// \r\n>
-#define at_tcp_enviado_ok		19	//SEND OK
-#define at_tcp_srvr_ok 			21	//AT+CIPSERVER
-#define at_tcp_srvr_ok_noch		23	//no change
-#define at_tcp_closed_ok 		9   //AT+CIPCLOSE
-#define at_read_ip_cfg_ok 		0
-#define at_timeout_tcp_ok	    0
-#define at_ping_ok 				0
 
-#define at_fail 				3	//FAIL
-#define at_conn_tcp_fail 		0
-#define at_send_tcp_fail 		0
+#define at_cambiar_modo1_ok 	1
+#define at_cambiar_modo1_err	2
+#define at_no_multiple_conn_ok 	3
+#define at_no_multiple_conn_err	4
+#define at_wifi_gotip			5
+#define at_wifi_err				6
+#define at_wifi_tout_err		7
+#define at_wifi_pass_err		8
+#define at_wifi_name_err		9
+#define at_wifi_conn_err		10
+#define at_wifi_disconnect		11
+#define at_wifi_connected		12
+#define at_tcp_conectado		13
+#define at_tcp_conn_err			14 
+#define at_tcp_alrdy_cnntd_err  15
+#define at_tcp_noip_err			16
+#define at_tcp_closed_ok 		17
+#define at_tcp_close_err		18
+#define at_tcp_client_desc		19
+#define at_tcp_ok_to_send		20
+#define at_tcp_enviado_ok		21
+#define at_tcp_snd_err			22
+#define at_tcp_enviado_error	23
+#define at_ready				24
 
-#define at_error				2	//ERROR
-#define at_cambiar_modo_err		29	//AT+CWMODE
-#define at_conn_wifi_err		32	//AT+CWJAP
-#define at_multiple_conn_err	30	//AT+CIPMUX=1
-#define at_no_multiple_conn_err	31	//AT+CIPMUX=0
-#define at_def_ip_err			33	//AT+CIPSTA=
-#define at_tcp_noip_err			34	//no ip
-#define at_tcp_alrdy_cnntd_err  14 //ALREADY CONNECTED
-#define at_tcp_snd_err			17 //link is not valid
-#define at_tcp_conn_err			6  //ERROR CLOSED
-#define at_tcp_srvr_err 		22 //AT+CIPSERVER
-#define at_tcp_close_err		26 //AT+CIPCLOSE
-#define at_timeot_err			0
-#define at_set_out_err			0
-#define at_ping_tout_err		0
 
-#define at_wifi_disconnect		10	// WIFI DISCONNECT
-#define at_wifi_connected		11	// WIFI CONNECTED
-#define at_wifi_gotip			12	// WIFI GOT IP
-#define at_tcp_conectado		15	// CONNECT
-#define at_tcp_desconectado		16	// CLOSED
-#define at_tcp_client_conectado	24	//,CONNECT
-#define at_tcp_client_desc		25	//,CLOSED
+//  A comentar
+ #define at_ok 			   		1	//OK
+// #define at_cambiar_modo1_ok 	28	//AT+CWMODE
+ #define at_deconectar_ok   		13	//AT+CWQAP
+ #define at_multiple_conn_ok 	7	//AT+CIPMUX=1
+// #define at_no_multiple_conn_ok 	8	//AT+CIPMUX=0
+ #define at_def_ip_ok	    	27	//AT+CIPSTA=
+// #define at_tcp_conectado		15	// CONNECT
+// #define at_tcp_ok_to_send		20	// \r\n>
+// #define at_tcp_enviado_ok		19	//SEND OK
+// #define at_tcp_srvr_ok 			21	//AT+CIPSERVER
+// #define at_tcp_srvr_ok_noch		23	//no change
+// #define at_tcp_closed_ok 		9   //AT+CIPCLOSE
+// #define at_read_ip_cfg_ok 		0
+// #define at_timeout_tcp_ok	    0
+// #define at_ping_ok 				0
 
-#define at_tcp_enviado_error	18	//SEND FAIL
-#define at_info_conn			0
+ #define at_fail 				3	//FAIL
+// #define at_conn_tcp_fail 		0
+// #define at_send_tcp_fail 		0
 
-#define at_restart				4	//ready
+ #define at_error				2	//ERROR
+// #define at_cambiar_modo1_err	29	//AT+CWMODE
+ #define at_conn_wifi_err		32	//AT+CWJAP
+ #define at_multiple_conn_err	30	//AT+CIPMUX=1
+// #define at_no_multiple_conn_err	31	//AT+CIPMUX=0
+ #define at_def_ip_err			33	//AT+CIPSTA=
+// #define at_tcp_noip_err			34	//no ip
+// #define at_tcp_alrdy_cnntd_err  14 //ALREADY CONNECTED
+// #define at_tcp_snd_err			17 //link is not valid
+// #define at_tcp_conn_err			6  //ERROR CLOSED
+// #define at_tcp_srvr_err 		22 //AT+CIPSERVER
+// #define at_tcp_close_err		26 //AT+CIPCLOSE
+// #define at_timeot_err			0
+// #define at_set_out_err			0
+// #define at_ping_tout_err		0
+
+// #define at_wifi_disconnect		10	// WIFI DISCONNECT
+// #define at_wifi_connected		11	// WIFI CONNECTED
+// #define at_wifi_gotip			12	// WIFI GOT IP
+// #define at_tcp_conectado		15	// CONNECT
+ #define at_tcp_desconectado		16	// CLOSED
+// #define at_tcp_client_conectado	24	//,CONNECT
+// #define at_tcp_client_desc		25	//,CLOSED
+
+// #define at_tcp_enviado_error	18	//SEND FAIL
+// #define at_info_conn			0
+
+ #define at_restart				4	//ready
 
 
 //------------------------- PARA Maquina de estados -------------------------//
