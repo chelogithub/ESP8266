@@ -359,7 +359,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 																									{
 																									a->_n_fcomp=strlen("ready");
 																									if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"ready",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)
-																										{AT_decode=at_tcp_enviado_error;}
+																										{AT_decode=at_ready;}
 																									}
 																								}
 																							}
@@ -723,7 +723,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			case 1:
 			{
 				a->_uart2snd[0]='\0';		//En teor�a borro lo que tenga el vector
-				if( a->_enviaruart==1)
+
+				if( a->_enviaruart==1)	//Solo se llama durante b->_estado!=, luego no entra mas en ambos.
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
@@ -731,6 +732,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_n_uart2SND=strlen(a->_uart2snd);
 						a->_estado=CAMBIAR_MODO_EN_CURSO;
 						}
+
+
 				a->_pasos++;
 				if (((a->_enviaruart==0)&&((AT_decode==at_ok)||(AT_decode==at_cambiar_modo1_ok)
 															 ||(AT_decode==at_cambiar_modo1_err)))
@@ -750,14 +753,16 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			case 2:
 			{
 				a->_uart2snd[0]='\0';		//En teor�a borro lo que tenga el vector
-				if(( a->_enviaruart==1)&&(AT_decode!=at_ready)
+				if(( a->_enviaruart==1)&&((AT_decode > at_wifi_connected)||(AT_decode==0)))
+				
+				/*if(( a->_enviaruart==1)&&(AT_decode!=at_ready)
 									   &&(AT_decode!=at_wifi_tout_err)
 									   &&(AT_decode!=at_wifi_pass_err)
 									   &&(AT_decode!=at_wifi_name_err)
 									   &&(AT_decode!=at_wifi_err)
 									   &&(AT_decode!=at_wifi_disconnect)
 									   &&(AT_decode!=at_wifi_connected)
-									   &&(AT_decode!=at_wifi_gotip))
+									   &&(AT_decode!=at_wifi_gotip))*/
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
@@ -770,20 +775,22 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						strncat(a->_uart2snd,a->_WF_Pass,strlen(a->_WF_Pass));
 						strncat(a->_uart2snd,finalizar,3);//strncat(a->_uart2snd,finalizar,strlen(finalizar));
 						a->_n_uart2SND=strlen(a->_uart2snd);//210418
-						a->_estado=200;
+						a->_estado=CONEXION_EN_CURSO;
 						//------Generacion del comando para conectar---------//
 						}
 
 				a->_pasos++;
-
-				if (((a->_enviaruart==0)&&((AT_decode==at_ready)||(AT_decode==at_wifi_tout_err)
+				//La primera vez no entra
+				if ((a->_enviaruart==0)&&((AT_decode <= at_wifi_connected)||(AT_decode==0)||(a->_ticks2 > 20000)))  //Que analice luego de enviar por uart
+				/*if (((a->_enviaruart==0)&&(AT_decode==at_ready)
+															||(AT_decode==at_wifi_tout_err)
 															||(AT_decode==at_wifi_pass_err)
 															||(AT_decode==at_wifi_name_err)
 															||(AT_decode==at_wifi_err)
 															||(AT_decode==at_wifi_disconnect)
 															||(AT_decode==at_wifi_connected)
-															||(AT_decode==at_wifi_gotip)))
-															||(a->_ticks2 > 20000))  //Que analice luego de enviar por uart
+															||(AT_decode==at_wifi_gotip))||(a->_ticks2 > 20000))*/
+
 					{
 
 						if((AT_decode==at_wifi_disconnect)&&(a->_ticks2 > 3000)) a->_estado=AT_decode;
@@ -794,10 +801,15 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						{
 							a->_instruccion=0;	//Para que siga contando por timeout al recibir WIFI DISCONNECT//Finalizo la instrucci�n
 							a->_ejecucion=0;
-							a->_estado=AT_decode;
-							//HW_RESET(a);
-							//HAL_GPIO_WritePin(a->RESET_PORT, a->RESET_PIN , GPIO_PIN_RESET);
-							//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+							if (AT_decode==0)
+							{
+								a->_estado=CONEXION_EN_CURSO;
+							}
+							else
+								{
+								a->_estado=AT_decode;
+								}
+							
 						}
 
 						a->_ticks2=0;
@@ -949,13 +961,13 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 			case 6:
 			{
 				a->_uart2snd[0]='\0';		//En teor�a borro lo que tenga el vector
-
-				if(( a->_enviaruart==1)&&(AT_decode!=at_wifi_connected)
+				if(( a->_enviaruart==1)&&((AT_decode > at_tcp_client_desc)||(AT_decode==0)))
+				/*if(( a->_enviaruart==1)&&(AT_decode!=at_wifi_connected)
 									   &&(AT_decode!=at_wifi_gotip)
 									   &&(AT_decode!=at_tcp_alrdy_cnntd_err)
 									   &&(AT_decode!=at_tcp_conectado)
 									   &&(AT_decode!=at_tcp_desconectado)
-									   &&(AT_decode!=at_error))
+									   &&(AT_decode!=at_error))*/
 						{
 						a->_pasos=0;
 						a->_ejecucion=1;
@@ -974,7 +986,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						}
 
 				a->_pasos++;
-				if (((a->_enviaruart==0)&&((AT_decode==at_wifi_disconnect)||(AT_decode==at_wifi_connected)
+				if ((a->_enviaruart==0)&&((AT_decode <= at_tcp_client_desc)||(AT_decode==0)||(a->_ticks2 > a->_wtchdog)))
+				/*if (((a->_enviaruart==0)&&((AT_decode==at_wifi_disconnect)||(AT_decode==at_wifi_connected)
 																		  ||(AT_decode==at_fail)
 																		  ||(AT_decode==at_wifi_gotip)
 																		  ||(AT_decode==at_tcp_alrdy_cnntd_err)
@@ -982,7 +995,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 																		  ||(AT_decode==at_tcp_desconectado)
 																		  ||(AT_decode==at_error)
 																		  ||(AT_decode==at_busy_p)))
-																		  ||(a->_ticks > a->_wtchdog))//210419 if (((a->_enviaruart==0)&&((estado==5)||(estado==6)||(estado==7)||(estado==13)||(estado==14)))||(a->_ticks > a->_wtchdog))  //Que analice luego de enviar por uart
+																		  ||(a->_ticks > a->_wtchdog))*///210419 if (((a->_enviaruart==0)&&((estado==5)||(estado==6)||(estado==7)||(estado==13)||(estado==14)))||(a->_ticks > a->_wtchdog))  //Que analice luego de enviar por uart
 					{
 						a->_estado=AT_decode;	//Devuelvo el estado WIFI Conectada
 						a->_instruccion=0;	//Finalizo la instrucci�n
@@ -1000,9 +1013,9 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 					unsigned char caracteres[8]="";
 
 
-
-				if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect)||(AT_decode==at_fail)
-						||(AT_decode==at_error))//240420
+				if((AT_decode <= at_tcp_client_desc)&&(AT_decode!=at_tcp_alrdy_cnntd_err)&&(AT_decode!=at_tcp_conectado)&&(AT_decode!=0))
+				/*if((AT_decode==at_tcp_desconectado)||(AT_decode==at_wifi_disconnect)||(AT_decode==at_fail)
+						||(AT_decode==at_error))*/ //240420
 				{
 					a->_estado=AT_decode;
 					a->_instruccion=0;		//Finalizo la instrucci�n
@@ -1031,16 +1044,16 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 										a->_n_uart2SND=strlen(a->_uart2snd);
 										strncat(a->_okenvio,"\r\r\n\r\nOK\r\n> ",strlen("\r\r\n\r\nOK\r\n> "));
 										a->_debug_count3++;
-										a->_estado=700;
+										a->_estado=TCP_SND_EN_CURSO;
 										//------Generacion del comando ---------//
 								}
 
 								a->_pasos++;
 
 							if ((a->_enviaruart==0)&&(AT_decode!=at_tcp_enviado_ok)
-												   &&((strcmp(a->_uartRCVD,a->_okenvio)==0)||(AT_decode==at_ok)
-														   	   	   	   	   	   	   	   	   ||(AT_decode==at_tcp_ok_to_send)
-																						   ||((a->_ticks > a->_wtchdog)&&(a->_subpaso==1))))
+												   &&((strcmp(a->_uartRCVD,a->_okenvio)==0)
+												   ||(AT_decode==at_tcp_ok_to_send)
+												   ||((a->_ticks > a->_wtchdog)&&(a->_subpaso==1))))
 							{//---------------------------------------------------Env�o el dato
 								if(a->_ticks > a->_wtchdog)//if((a->_ticks > a->_wtchdog)||(a->_subpaso==1))//((a->_ticks > a->_wtchdog)&&(a->_subpaso==1))
 								{
@@ -1054,7 +1067,9 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 								a->_ticks=0;//----------------------------------Evito que entre de toque en el siguiente
 							}
 
-							if((a->_estado==700)&&((AT_decode==at_tcp_enviado_ok)||(a->_ticks > a->_wtchdog)
+							if(((AT_decode <= at_tcp_enviado_error)&&(AT_decode!=0))||(a->_ticks > a->_wtchdog))
+
+							/*if((a->_estado==TCP_SND_EN_CURSO)&&((AT_decode==at_tcp_enviado_ok)||(a->_ticks > a->_wtchdog)
 																				 ||(AT_decode==at_wifi_disconnect)
 																				 ||(AT_decode==at_fail)
 																				 ||(AT_decode==at_wifi_connected)
@@ -1062,7 +1077,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 																				 ||(AT_decode==at_tcp_desconectado)
 																				 ||(AT_decode==at_tcp_snd_err)
 																				 ||(AT_decode==at_tcp_enviado_error)
-																				 ||(AT_decode==at_busy_p)))
+																				 ||(AT_decode==at_busy_p)))*/
 								{
 									a->_debug_count5++;
 									if(a->_ticks > a->_wtchdog)
@@ -1085,7 +1100,6 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 									a->_subpaso=0;
 								}
 				}
-					//a->_ticks=0;						//Reseteo cada vez que entro
 			}
 			break;
 			//--------------------------------------------------------//
@@ -1253,27 +1267,31 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
  }
  /*--------------------------------------------------------------*/
 
-		//--------------Maquina de estados para conectar a TCP
+// ACÁ ENTRO SIEMPRE ENTRO NO DEPENDO DE RECIBIR LOS DATOS
 int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 {
 		switch (b->_estado_conexion)
 		{
 			case CAMBIAR_MODO_EN_CURSO:			//WIFI Desconectado --> Conectar a WIFI nuevamente
 			{
+				//----------------------------------------------------------------------------------------------------------------------------//
+				//La primera vez que entro el b->_estado no es CAMBIAR_MODO_EN_CURSO es 0, entonces ingresa, genera la info para cambiar el estado //
+				//la manda por puerto serie, hasta que no se reciba info b->_estado_conexion seguirá con el valor CAMBIAR MODO EN CURSO ya que//
+				//al no recibirse info, no se procesa el AT_ESP8266_ND y no se le asigna valores leidos a b->_estado que no es mas que lo que //
+				//se está recbibiendo por puerto serie.																						  //
+				//Una vez recibido datos por puerto serie, se toma la decisión de realizar el cambio de estado								  //
+				//----------------------------------------------------------------------------------------------------------------------------//
 				if((b->_estado!=CAMBIAR_MODO_EN_CURSO)&&(b->_estado!=at_cambiar_modo1_ok)
 													  &&(b->_estado!=at_tcp_enviado_ok))	//Si estoy conectando, no vuelvo a conectar.
 				{
 						Cambiar_CWMODE(b);
-						if(b->_enviaruart==1)
-							{
-								b->_estado=AT_ESP8266_ND(b);  //Genero las instrucciones a enviar
-								b->_enviaruart=0;
-								if (b->_DBG_EN==1)
-								{
-									ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
-								}
-								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
-							}
+						//if(b->_enviaruart==1)
+							//{
+						b->_estado=AT_ESP8266_ND(b);  //Genero las instrucciones a enviar, aquí estado ya es CAMBIAR MODO EN CURSO, siguiente ingreso no vengo por aquí.
+						b->_enviaruart=0;
+						if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
+						HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
+							//}
 				}
 				else
 				{
@@ -1647,7 +1665,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			case TCP_CONN_EN_CURSO:			//Conectar a Servidor TCP
 			{
 				if((b->_estado!=TCP_CONN_EN_CURSO)&&(b->_estado!=at_error)
-									&&(b->_estado!=at_ok)
+									&&(b->_estado!=at_ready)
 									&&(b->_estado!=at_wifi_disconnect)
 									&&(b->_estado!=at_tcp_alrdy_cnntd_err)
 									&&(b->_estado!=at_tcp_conectado)
@@ -1660,20 +1678,16 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 								b->_enviaruart=0;
 								if (b->_DBG_EN==1) ITM0_Write((uint8_t*)b->_uart2snd, b->_n_uart2SND); //210915
 								HAL_UART_Transmit(PORTSER,(uint8_t*)b->_uart2snd, b->_n_uart2SND,100);
-
-
 							}
 				}
-
 				//----Condiciones de cambio de estado
-				if((b->_estado==at_ok)||(b->_estado==at_tcp_alrdy_cnntd_err)||(b->_estado==at_tcp_conectado))
+				if((b->_estado==at_tcp_alrdy_cnntd_err)||(b->_estado==at_tcp_conectado)) 	
 					{
-					b->_estado_conexion=TCP_CONN_OK;
+						b->_estado_conexion=TCP_CONN_OK;
 					}
-				else
-				{
-					if((b->_estado==at_error)||(b->_estado==at_tcp_desconectado)) b->_estado_conexion=TCP_CONN_ERROR;
-				}
+					else
+						if(b->_estado<= at_tcp_client_desc)  	b->_estado_conexion=TCP_CONN_ERROR;
+				//if((b->_estado==at_error)||(b->_estado==at_tcp_desconectado))  				b->_estado_conexion=TCP_CONN_ERROR;
 				//----Condiciones de cambio de estado
 			}
 			break;
@@ -1689,7 +1703,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 					b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 				}
-				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_tcp_noip_err)||(b->_estado==at_error)||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
+				if((b->_estado==at_wifi_disconnect)||(b->_estado==at_ready)||(b->_estado==at_tcp_noip_err)) //Si me desconecto, me vuelvo a conectar
 				{
 					ConectarWIFI(b);
 					b->_estado_conexion=CONEXION_EN_CURSO;
@@ -1697,7 +1711,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 					b->_n_orig=0; //Borro el vector RX
 				}
 
-				if((b->_estado==at_tcp_desconectado)||(b->_estado==at_tcp_alrdy_cnntd_err))	//Si se cierra la conexión vuelvo a conectar
+				if(b->_estado==at_tcp_desconectado) //Si se cierra la conexión vuelvo a conectar
 				{
 					ConectarTCP(b);
 					b->_estado_conexion=TCP_CONN_EN_CURSO;
@@ -1716,17 +1730,17 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 						b->_estado_conexion=CAMBIAR_MODO_EN_CURSO;
 						b->_estado=0;
 						b->_n_orig=0; //Borro el vector RX
-
 						b->_TCP_Local_Server_Initiated=0;	//Indico servidor debe ser iniciado
 					}
-					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_deconectar_ok )||(b->_estado==at_fail)) //Si me desconecto, me vuelvo a conectar
+					if((b->_estado==at_wifi_disconnect)||(b->_estado==at_ready)||(b->_estado==at_tcp_noip_err)) //Si me desconecto, me vuelvo a conectar
 					{
 						ConectarWIFI(b);
 						b->_estado_conexion=CONEXION_EN_CURSO;
 						b->_estado=0;
 						b->_n_orig=0; //Borro el vector RX
 					}
-					if((b->_estado==at_error)||(b->_estado==at_tcp_desconectado))	//Si se cierra la conexión vuelvo a conectar
+
+					if((b->_estado==at_tcp_desconectado))	//Si se cierra la conexión vuelvo a conectar
 					{
 						ConectarTCP(b);
 						b->_estado_conexion=TCP_CONN_EN_CURSO;

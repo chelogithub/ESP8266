@@ -22,30 +22,33 @@
 #define TOKIPDDATASRVR 5
 //------------------------- PARA Comandos AT		 -------------------------//
 
-#define at_cambiar_modo1_ok 	1
-#define at_cambiar_modo1_err	2
-#define at_no_multiple_conn_ok 	3
-#define at_no_multiple_conn_err	4
-#define at_wifi_gotip			5
-#define at_wifi_err				6
-#define at_wifi_tout_err		7
-#define at_wifi_pass_err		8
-#define at_wifi_name_err		9
-#define at_wifi_conn_err		10
-#define at_wifi_disconnect		11
-#define at_wifi_connected		12
-#define at_tcp_conectado		13
-#define at_tcp_conn_err			14 
-#define at_tcp_alrdy_cnntd_err  15
-#define at_tcp_noip_err			16
-#define at_tcp_closed_ok 		17
-#define at_tcp_close_err		18
-#define at_tcp_client_desc		19
-#define at_tcp_ok_to_send		20
-#define at_tcp_enviado_ok		21
-#define at_tcp_snd_err			22
-#define at_tcp_enviado_error	23
-#define at_ready				24
+#define at_ready				1
+#define at_cambiar_modo1_ok 	2
+#define at_cambiar_modo1_err	3
+#define at_no_multiple_conn_ok 	4
+#define at_no_multiple_conn_err	5
+#define at_wifi_gotip			6
+#define at_wifi_err				7
+#define at_wifi_tout_err		8
+#define at_wifi_pass_err		9
+#define at_wifi_name_err		10
+#define at_wifi_conn_err		11
+#define at_wifi_disconnect		12
+#define at_wifi_connected		13
+#define at_tcp_conectado		14
+#define at_tcp_conn_err			15 
+#define at_tcp_alrdy_cnntd_err  16
+#define at_tcp_noip_err			17
+#define at_tcp_closed_ok 		18
+#define at_tcp_close_err		19
+#define at_tcp_client_desc		20
+#define at_tcp_ok_to_send		21
+#define at_tcp_enviado_ok		22
+#define at_tcp_snd_err			23
+#define at_tcp_enviado_error	24
+
+//OJO AGREGAR SEND FAIL ->X Recive los bytes para enviar pero no logra enviarlo.
+
 
 
 //  A comentar
