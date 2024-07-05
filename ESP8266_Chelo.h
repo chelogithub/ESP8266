@@ -124,16 +124,18 @@ struct MBUS_FIFO
 
 struct WIFI
 {
-	GPIO_TypeDef  *RESET_PORT;		//Port for NSS
-	uint16_t RESET_PIN;				//Pin number
-	char _WF_Net[32];					//Nombre de la red WIFI  a conectaraurt
-	char _WF_Pass[16];					//Password de la red WIFI
-	char _TCP_Remote_Server_IP[16];			//IP del Servidor TCP
+	GPIO_TypeDef  *RESET_PORT;					//Port for NSS
+	uint16_t RESET_PIN;							//Pin number
+	char _WF_Net[32];							//Nombre de la red WIFI  a conectaraurt
+	char _WF_Pass[16];							//Password de la red WIFI
+	char _WF_AP_SSID[28];						//Nombre de la red WIFI  a conectaraurt
+	char _WF_AP_Pass[12];						//Password de la red WIFI
+	char _TCP_Remote_Server_IP[16];				//IP del Servidor TCP
 	char _TCP_Remote_Server_Port[6];				//Puerto del Servidor TCP
-	char _TCP_Local_Server_IP[16];			//IP del Servidor TCP Local
-	char _TCP_Local_Server_Port[6];			//Puerto del Servidor TCP local
-	char _TCP_Local_Server_GWY[16];			//Gateway Servidor TCP Local
-	char _TCP_Local_Server_MSK[16];			//Mascara Servidor TCP Local
+	char _TCP_Local_Server_IP[16];				//IP del Servidor TCP Local
+	char _TCP_Local_Server_Port[6];				//Puerto del Servidor TCP local
+	char _TCP_Local_Server_GWY[16];				//Gateway Servidor TCP Local
+	char _TCP_Local_Server_MSK[16];				//Mascara Servidor TCP Local
 	uint8_t  _TCP_Local_Server_EN;				//Habilitar modo Servidor TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _TCP_Local_Server_Initiated;		//Servidor TCP ya iniciado TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _automatizacion;					//Tareas gestionadas automaticamente
