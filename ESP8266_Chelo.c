@@ -2059,3 +2059,37 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 	}
 		//--------------Maquina de estados para conectar a TCP
 
+int createAccessPoint(struct WIFI *a, UART_HandleTypeDef *PORTSER)
+{
+	char atAP[64]="AT+CWSAP=";
+	char dummyArray[20];
+
+	HAL_UART_Transmit(PORTSER, "AT+RESTORE\r\n", strlen("AT+RESTORE\r\n"),100);
+	HAL_Delay(5000);
+	HAL_UART_Transmit(PORTSER, "AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"),100);
+	HAL_Delay(1000);
+	HAL_UART_Transmit(PORTSER, "AT+CIPMUX=1\r\n", strlen("AT+CIPMUX=1\r\n"),100);
+	HAL_Delay(1000);
+	HAL_UART_Transmit(PORTSER, "AT+CIPSERVERMAXCONN=1\r\n", strlen("AT+CIPSERVERMAXCONN=1\r\n"),100);
+	HAL_Delay(1000);
+	dummyArray[0]='"';
+	dummyArray[1]='\0';
+	strncat(atAP,dummyArray,strlen(dummyArray));
+	strncat(atAP,a->_WF_AP_SSID,strlen(a->_WF_AP_SSID));
+	dummyArray[0]='"';
+	dummyArray[1]=',';
+	dummyArray[2]='"';
+	dummyArray[3]='\0';
+	strncat(atAP,dummyArray,strlen(dummyArray));
+	strncat(atAP,a->_WF_AP_Pass,strlen(a->_WF_AP_Pass));
+	dummyArray[0]='"';
+	dummyArray[1]='\0';
+	strncat(atAP,dummyArray,strlen(dummyArray));
+	dummyArray[0]='\0';
+	strcpy(dummyArray,",12,3,2,0\r\n");
+	strncat(atAP,dummyArray,strlen(dummyArray));
+	HAL_UART_Transmit(PORTSER, atAP, strlen(atAP),100);
+	HAL_Delay(1000);
+	HAL_UART_Transmit(PORTSER, "AT+CIPSERVER=1,80\r\n", strlen("AT+CIPSERVER=1,80\r\n"),100);
+	HAL_Delay(1000);
+}
