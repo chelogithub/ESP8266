@@ -155,7 +155,16 @@ a->_overflowVector=512;			//Maximo tamaño del vector al procesar un +IPD
 
  // estado no cambia a->estado salvo que dicho estado sea algun valor esperado en la funcion
  //	la recepcion de datos no afecta la variable a->estado, pero puede afectar el registro recibido, en tal caso la funci�n de cae por timeout de rpta a->ticks=5eg
- /*--------------------------------------------------------------*/
+
+void ESP8266_HW_Reset(struct WIFI *a )
+{
+	  HAL_GPIO_WritePin(a->RESET_PORT, a->RESET_PIN, GPIO_PIN_RESET);
+	  ITM0_Write("\r\n ESP HW Resetting\r\n",strlen("\r\n ESP HW Resetting\r\n"));
+	  HAL_Delay(2000);											//Tiempo de reset del módulo
+	  ITM0_Write("\r\n ESP ResetT\r\n",strlen("\r\n ESP ResetT\r\n"));
+	  HAL_GPIO_WritePin(a->RESET_PORT, a->RESET_PIN, GPIO_PIN_SET);		//Habilito módulo
+}
+/*--------------------------------------------------------------*/
 int AT_ESP8266_ND( struct WIFI *a )
  {
 	 int l3=0, AT_decode=0, estado=0, str=0,chr_pos_fnc=0;

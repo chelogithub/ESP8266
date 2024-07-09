@@ -219,6 +219,7 @@ void EnviarDatosSRVR(struct WIFI *);
 void DesconectarTCP(struct WIFI *);
 void EnviarDatos(struct WIFI *);
 void Inicializar(struct WIFI *);
+void ESP8266_HW_Reset(struct WIFI *);
 int AT_ES8266(struct WIFI *);
 /*----------------------------------------------
 int  AT_Recibir_String_struct(struct WIFI *);
