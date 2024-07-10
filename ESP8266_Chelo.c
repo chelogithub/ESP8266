@@ -1573,13 +1573,13 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 					}
 					if((b->_estado==at_tcp_alrdy_cnntd_err)||(b->_estado==at_tcp_conectado))
 					{
-						if(b->_automatizacion >= WF_SEND )
+						/*if(b->_automatizacion >= WF_SEND )
 						{
 							EnviarDatos(b);
 							b->_estado_conexion=TCP_SND_EN_CURSO;
 							b->_estado=0;
 							b->_n_orig=0; //Borro el vector Rx
-						}
+						}*/
 					}
 			}
 			break;
