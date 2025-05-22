@@ -143,11 +143,11 @@ struct WIFI
 	int  _estado_conexion;			//Estado de la conexion del m�dulo
 	int  _estado_rcv_data;			//Estado de Recepcion de datos
 	int  _estado_old;
-	char _dataRCV[512];	//char _dataRCV[384];				//Data recibida por TCP   SOLO PARA EVITAR SOBREESCRITURA VALOR ORIGINAL 64 RESTRINGIR EN EL .C
-	char _data2SND[512];//char _data2SND[384];				//Data a enviar por TCP
-	char _uart2snd[512];//char _uart2snd[384];			//Datos a enviar por UART
-	char _uartRCVD[512];//char _uartRCVD[384];			//Datos recibidos de UART
-	char _uartRCVD_tok[512];//char _uartRCVD_tok[384];		//Datos recibidos de UART
+	char _dataRCV[2048];	//char _dataRCV[384];				//Data recibida por TCP   SOLO PARA EVITAR SOBREESCRITURA VALOR ORIGINAL 64 RESTRINGIR EN EL .C
+	char _data2SND[2048];//char _data2SND[384];				//Data a enviar por TCP
+	char _uart2snd[2048];//char _uart2snd[384];			//Datos a enviar por UART
+	char _uartRCVD[2048];//char _uartRCVD[384];			//Datos recibidos de UART
+	char _uartRCVD_tok[2048];//char _uartRCVD_tok[384];		//Datos recibidos de UART
 	int  _id_conn;					//ID de conexion del cliente con el servidor
 	int  _send_data;					//Aviso que voy a enviar datos
 	int	 _uartCHrcvd;				//Cantidad de caracteres recibidos por la uart
@@ -156,7 +156,7 @@ struct WIFI
 	int  _pasos;					//Pasos por la maquina de estados no se puede manejar como variable local porque hay que almacenarlos cuando entra y sale de la llamada
 	int	 _instruccion;				//Funcion que se desea realizar
 	int  _ejecucion;				//Funcion en ejecucion	
-	char _okenvio[512];//char _okenvio[384];				//String para enviao de datos, comparacion de enviado y recibido strings variables
+	char _okenvio[2048];//char _okenvio[384];				//String para enviao de datos, comparacion de enviado y recibido strings variables
 	int  _ticks;
 	int  _ticks2;
 	int  _wtchdog;					//Monitoreo de actividad del módulo

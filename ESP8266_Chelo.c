@@ -571,6 +571,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						a->_ejecucion=1;
 						strncat(a->_uart2snd,"AT+CWMODE=1\r\n",strlen("AT+CWMODE=1\r\n"));
 						a->_n_uart2SND=strlen(a->_uart2snd);
+						if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 						a->_estado=100;
 						}
 				a->_pasos++;
@@ -615,6 +616,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						strncat(a->_uart2snd,a->_WF_Pass,strlen(a->_WF_Pass));
 						strncat(a->_uart2snd,finalizar,3);//strncat(a->_uart2snd,finalizar,strlen(finalizar));
 						a->_n_uart2SND=strlen(a->_uart2snd);//210418
+						if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 						a->_estado=200;
 						//------Generacion del comando para conectar---------//
 						}
@@ -658,6 +660,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						//------Generacion del comando para desconectar---------//
 						strncat(a->_uart2snd,"AT+CWQAP\r\n",10);
 						a->_n_uart2SND=strlen(a->_uart2snd);
+						if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 						//------Generacion del comando para desconectar---------//
 						a->_estado=300;
 						}
@@ -700,6 +703,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 							strncat(a->_uart2snd,"AT+CIPMUX=0\r\n",strlen("AT+CIPMUX=0\r\n"));
 						}
 						a->_n_uart2SND=strlen(a->_uart2snd);
+						if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 						//------Generacion del comando para desconectar---------//
 						a->_estado=400;
 						}
@@ -750,6 +754,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						strncat(a->_uart2snd,finalizar2,2);//strncat(a->_uart2snd,finalizar2,strlen(finalizar2));
 
 						a->_n_uart2SND=strlen(a->_uart2snd);
+						if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 						//------Generacion del comando para desconectar---------//
 						a->_estado=500;
 						}
@@ -797,6 +802,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						strncat(a->_uart2snd,a->_TCP_Remote_Server_Port,strlen(a->_TCP_Remote_Server_Port));
 						strncat(a->_uart2snd,finalizar2,strlen(finalizar2));
 						a->_n_uart2SND=strlen(a->_uart2snd);
+						if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 						a->_estado=600;
 						//------Generacion del comando ---------//
 						}
@@ -857,6 +863,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 										strcpy(a->_okenvio,a->_uart2snd);
 										strncat(a->_uart2snd,finalizar2,2);//strncat(a->_uart2snd,finalizar2,strlen(finalizar2));
 										a->_n_uart2SND=strlen(a->_uart2snd);
+										if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 										strncat(a->_okenvio,"\r\r\n\r\nOK\r\n> ",strlen("\r\r\n\r\nOK\r\n> "));
 										a->_debug_count3++;
 										a->_estado=700;
@@ -932,6 +939,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 						strncat(a->_uart2snd,a->_TCP_Local_Server_Port,strlen(a->_TCP_Local_Server_Port));
 						strncat(a->_uart2snd,finalizar2,strlen(finalizar2));
 						a->_n_uart2SND=strlen(a->_uart2snd);
+						if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 						a->_estado=800;
 						//------Generacion del comando ---------//
 						}
@@ -982,6 +990,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 										strcpy(a->_okenvio,a->_uart2snd);
 										strncat(a->_uart2snd,finalizar2,2);//strncat(a->_uart2snd,finalizar2,strlen(finalizar2));
 										a->_n_uart2SND=strlen(a->_uart2snd);
+										if(a->_n_uart2SND > 511) a->_n_uart2SND=511;  //250519
 										strncat(a->_okenvio,"\r\r\n\r\nOK\r\n> ",strlen("\r\r\n\r\nOK\r\n> "));
 										a->_debug_count3++;
 										a->_estado=900;
@@ -2099,6 +2108,6 @@ int createAccessPoint(struct WIFI *a, UART_HandleTypeDef *PORTSER)
 	strncat(atAP,dummyArray,strlen(dummyArray));
 	HAL_UART_Transmit(PORTSER, atAP, strlen(atAP),100);
 	HAL_Delay(1000);
-	HAL_UART_Transmit(PORTSER, "AT+CIPSERVER=1,80\r\n", strlen("AT+CIPSERVER=1,80\r\n"),100);
+	HAL_UART_Transmit(PORTSER, "AT+CIPSERVER=1,8080\r\n", strlen("AT+CIPSERVER=1,8080\r\n"),100);
 	HAL_Delay(1000);
 }
