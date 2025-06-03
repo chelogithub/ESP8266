@@ -1097,7 +1097,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 		{
 			case CAMBIAR_MODO_EN_CURSO:			//WIFI Desconectado --> Conectar a WIFI nuevamente
 			{
-				if((b->_estado!=100)&&(b->_estado!=at_ok)
+				if((b->_estado!=CAMBIAR_MODO_EN_CURSO)&&(b->_estado!=at_ok)
 									&&(b->_estado!=at_cambiar_modo_ok)
 									&&(b->_estado!=at_error)
 									&&(b->_estado!=at_restart)
@@ -1179,7 +1179,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			break;
 			case CONEXION_EN_CURSO:			//WIFI Desconectado --> Conectar a WIFI nuevamente
 			{
-				if((b->_estado!=200)&&((b->_estado!=at_ok)
+				if((b->_estado!=CONEXION_EN_CURSO)&&((b->_estado!=at_ok)
 									&&(b->_estado!=at_error)
 									&&(b->_estado!=at_fail)
 									&&(b->_estado!=at_restart)
@@ -1275,7 +1275,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			break;
 			case DESCONEXION_EN_CURSO:			//Desconectar WiFi
 			{
-				if((b->_estado!=300)&&(b->_estado!=at_restart)&&(b->_estado!=at_wifi_disconnect)&&(b->_estado!=at_deconectar_ok ))	//Si estoy conectando, no vuelvo a conectar.
+				if((b->_estado!=DESCONEXION_EN_CURSO)&&(b->_estado!=at_restart)&&(b->_estado!=at_wifi_disconnect)&&(b->_estado!=at_deconectar_ok ))	//Si estoy conectando, no vuelvo a conectar.
 				{
 						DesconectarWIFI(b);
 						if(b->_enviaruart==1)
@@ -1319,7 +1319,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			break;
 			case MUX_CONN_EN_CURSO:			//Multiples Conexiones
 			{
-				if((b->_estado!=400)&&(b->_estado!=at_restart)
+				if((b->_estado!=MUX_CONN_EN_CURSO)&&(b->_estado!=at_restart)
 									&&(b->_estado!=at_ok)
 									&&(b->_estado!=at_error)
 									&&(b->_estado!=at_multiple_conn_ok)
@@ -1406,7 +1406,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			break;
 			case DEF_IP_EN_CURSO:			//Definir IP
 			{
-				if((b->_estado!=500)&&(b->_estado!=at_restart)
+				if((b->_estado!=DEF_IP_EN_CURSO)&&(b->_estado!=at_restart)
 									&&(b->_estado!=at_ok)
 									&&(b->_estado!=at_error)
 									&&(b->_estado!=at_def_ip_ok)
@@ -1493,7 +1493,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			break;
 			case TCP_CONN_EN_CURSO:			//Conectar a Servidor TCP
 			{
-				if((b->_estado!=600)&&(b->_estado!=at_error)
+				if((b->_estado!=TCP_CONN_EN_CURSO)&&(b->_estado!=at_error)
 									&&(b->_estado!=at_ok)
 									&&(b->_estado!=at_wifi_disconnect)
 									&&(b->_estado!=at_tcp_alrdy_cnntd_err)
@@ -1594,7 +1594,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			break;
 			case TCP_SND_EN_CURSO:			//Enviar datos a Servidor TCP
 			{
-				if((b->_estado!=700)&&(b->_estado!=at_error)
+				if((b->_estado!=TCP_SND_EN_CURSO)&&(b->_estado!=at_error)
 									&&(b->_estado!=at_wifi_disconnect)
 									&&(b->_estado!=at_tcp_desconectado)
 									&&(b->_estado!=at_tcp_snd_err)
@@ -1616,7 +1616,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 							}
 				}
-						if((b->_estado==700)&&(b->_enviaruart==1)
+						if((b->_estado==TCP_SND_EN_CURSO)&&(b->_enviaruart==1)
 											&&(b->_estado!=at_error)
 											&&(b->_estado!=at_tcp_noip_err)
 											&&(b->_estado!=at_wifi_disconnect)
@@ -1738,7 +1738,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 			break;
 			case TCP_SRVR_EN_CURSO:			//Conectar Servidor TCP local
 						{
-							if((b->_estado!=800)&&(b->_estado!=at_error)&&(b->_estado!=at_wifi_disconnect)&&(b->_estado!=21)&&(b->_estado!=22)&&(b->_estado!=23))	//Si estoy conectando, no vuelvo a conectar.
+							if((b->_estado!=TCP_SRVR_EN_CURSO)&&(b->_estado!=at_error)&&(b->_estado!=at_wifi_disconnect)&&(b->_estado!=21)&&(b->_estado!=22)&&(b->_estado!=23))	//Si estoy conectando, no vuelvo a conectar.
 							{
 								CrearServidorTCP(b);
 									if(b->_enviaruart==1)
@@ -1935,7 +1935,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 						case TCP_SRVR_TX_EN_CURSO:			//Enviar datos desde Servidor TCP
 						{
-							if((b->_estado!=900)&&(b->_estado!=at_error)&&
+							if((b->_estado!=TCP_SRVR_TX_EN_CURSO)&&(b->_estado!=at_error)&&
 							   (b->_estado!=at_wifi_disconnect)&&
 							   (b->_estado!=at_wifi_connected)&&
 							   (b->_estado!=at_wifi_gotip)&&
@@ -1956,7 +1956,7 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 
 										}
 							}
-									if((b->_estado==900)&&(b->_enviaruart==1)&&
+									if((b->_estado==TCP_SRVR_TX_EN_CURSO)&&(b->_enviaruart==1)&&
 									   (b->_estado!=at_error)&&
 									   (b->_estado!=at_wifi_disconnect)&&
 									   (b->_estado!=at_wifi_connected)&&
