@@ -111,6 +111,8 @@ a->_TCP_Local_Server_Port[6]='\0';		//Puerto del Servidor TCP local
 a->_TCP_Local_Server_GWY[16]='\0';		//Gateway de red
 a->_TCP_Local_Server_MSK[16]='\0';		//Mascara de red
 a->_TCP_Local_Server_Initiated=0;		//Servidor TCP no iniciado
+a->_moduleTO=0;					//Reseteo de módulo
+a->_FLAG_UART_WF=0;				//Bandera para procesar dato WiFi
 a->_estado=0;					//Estado de m�dulo WIFI
 a->_estado_rcv_data=0;			//Estado de Recepcion de datos
 a->_dataRCV[512]='\0';			//Data recibida por TCP   SOLO PARA EVITAR SOBREESCRITURA VALOR ORIGINAL 64 RESTRINGIR EN EL .C
@@ -2110,4 +2112,44 @@ int createAccessPoint(struct WIFI *a, UART_HandleTypeDef *PORTSER)
 	HAL_Delay(1000);
 	HAL_UART_Transmit(PORTSER, "AT+CIPSERVER=1,8080\r\n", strlen("AT+CIPSERVER=1,8080\r\n"),100);
 	HAL_Delay(1000);
+}
+void WF_Ticks(struct WIFI *a, UART_HandleTypeDef *PORTSER, uint8_t * vRX)
+{
+	a->_ticks++;
+
+	if(a->_ejecucion==1)
+		{
+			if (a->_moduleTO!=1)
+			{
+				if(a->_instruccion!=2) a->_ticks++;//-----------------------Solo cuento una vez reconcido el timeout, cuando entro al timeout no cuento
+				if(a->_instruccion==2) a->_ticks2++;
+			}
+
+
+			if ((a->_instruccion>2)&&(a->_ticks > 5500))//250603 //if (wf._ticks > 5000)
+			{
+				a->_moduleTO=1;
+				if(PORTSER->Instance->CR1 == 0x200C)  //--------------------Evito error UART colgado
+				{
+					HAL_UART_Receive_IT(PORTSER, vRX ,1);
+					a->_FLAG_UART_WF=0; //OBS-VER Para que me vuelva a habilitar el timer
+				}
+				a->_ticks=0;  //Se agrega para que vuelva a entrar en el siguiente TO y no se queda aqui for ever
+			}
+			if ((a->_instruccion==2)&&(a->_ticks2 > 20500)) //250603 //if (wf._ticks > 5000)
+			{
+				a->_moduleTO=1;
+				if(PORTSER->Instance->CR1== 0x200C)  //--------------------Evito error UART colgado
+				{
+					HAL_UART_Receive_IT(PORTSER, vRX ,1);
+					a->_FLAG_UART_WF=0; //OBS-VER Para que me vuelva a habilitar el timer
+				}
+				a->_ticks=0;//Se agrega para que vuelva a entrar en el siguiente TO y no se queda aqui for ever
+			}
+
+		}
+		else
+		{
+			a->_ticks=0;
+		}
 }

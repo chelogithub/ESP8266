@@ -139,6 +139,8 @@ struct WIFI
 	uint8_t  _TCP_Local_Server_EN;				//Habilitar modo Servidor TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _TCP_Local_Server_Initiated;		//Servidor TCP ya iniciado TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _automatizacion;					//Tareas gestionadas automaticamente
+	uint8_t  _FLAG_UART_WF;						//Habilitacion de info recibida
+	uint8_t  _moduleTO;							//TimeOut modulo ESP
 	int	 _estado;					//Estado de m�dulo WIFI
 	int  _estado_conexion;			//Estado de la conexion del m�dulo
 	int  _estado_rcv_data;			//Estado de Recepcion de datos
@@ -219,6 +221,7 @@ void EnviarDatosSRVR(struct WIFI *);
 void DesconectarTCP(struct WIFI *);
 void EnviarDatos(struct WIFI *);
 void Inicializar(struct WIFI *);
+void Ticks(struct WIFI *,UART_HandleTypeDef *, uint8_t *);
 void ESP8266_HW_Reset(struct WIFI *);
 int AT_ES8266(struct WIFI *);
 /*----------------------------------------------
