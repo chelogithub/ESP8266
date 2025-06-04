@@ -139,8 +139,11 @@ struct WIFI
 	uint8_t  _TCP_Local_Server_EN;				//Habilitar modo Servidor TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _TCP_Local_Server_Initiated;		//Servidor TCP ya iniciado TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _automatizacion;					//Tareas gestionadas automaticamente
-	uint8_t  _FLAG_UART_WF;						//Habilitacion de info recibida
+	uint8_t  _FLAG_UART_WF;						//Flag de info recibida
 	uint8_t  _moduleTO;							//TimeOut modulo ESP
+	uint8_t  _WF_SND_FLAG;						//Flag para enviar data
+	uint32_t _WF_SND_FLAG_ticks;				//Ticks para el envio de info
+	uint32_t _gapTimeSND;						//Tiempo de envío entre paquetes
 	int	 _estado;					//Estado de m�dulo WIFI
 	int  _estado_conexion;			//Estado de la conexion del m�dulo
 	int  _estado_rcv_data;			//Estado de Recepcion de datos

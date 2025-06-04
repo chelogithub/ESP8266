@@ -113,6 +113,7 @@ a->_TCP_Local_Server_MSK[16]='\0';		//Mascara de red
 a->_TCP_Local_Server_Initiated=0;		//Servidor TCP no iniciado
 a->_moduleTO=0;					//Reseteo de módulo
 a->_FLAG_UART_WF=0;				//Bandera para procesar dato WiFi
+a->_gapTimeSND=2000;			//Tiempo de envío entre paquetes
 a->_estado=0;					//Estado de m�dulo WIFI
 a->_estado_rcv_data=0;			//Estado de Recepcion de datos
 a->_dataRCV[512]='\0';			//Data recibida por TCP   SOLO PARA EVITAR SOBREESCRITURA VALOR ORIGINAL 64 RESTRINGIR EN EL .C
@@ -2115,7 +2116,14 @@ int createAccessPoint(struct WIFI *a, UART_HandleTypeDef *PORTSER)
 }
 void WF_Ticks(struct WIFI *a, UART_HandleTypeDef *PORTSER, uint8_t * vRX)
 {
-	a->_ticks++;
+	//a->_ticks++;
+	if((a->_estado_conexion==TCP_CONN_OK || a->_estado_conexion==TCP_SND_EN_CURSO)&&(a->_TCP_Local_Server_EN==0))  a->_WF_SND_FLAG_ticks++;
+
+	if(a->_WF_SND_FLAG_ticks >= a->_gapTimeSND && a->_ejecucion!=1 && a->_TCP_Local_Server_EN==0) //wf_snd_flag_ticks>=4000
+		{
+		a->_WF_SND_FLAG=1;		//Envío de datos cada 2 segs
+		}
+
 
 	if(a->_ejecucion==1)
 		{
