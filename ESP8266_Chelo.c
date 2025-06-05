@@ -111,6 +111,7 @@ a->_TCP_Local_Server_Port[6]='\0';		//Puerto del Servidor TCP local
 a->_TCP_Local_Server_GWY[16]='\0';		//Gateway de red
 a->_TCP_Local_Server_MSK[16]='\0';		//Mascara de red
 a->_TCP_Local_Server_Initiated=0;		//Servidor TCP no iniciado
+a->_HW_Init=0;					//Flag de Hardware inicializado
 a->_moduleTO=0;					//Reseteo de módulo
 a->_FLAG_UART_WF=0;				//Bandera para procesar dato WiFi
 a->_gapTimeSND=2000;			//Tiempo de envío entre paquetes
@@ -2116,7 +2117,8 @@ int createAccessPoint(struct WIFI *a, UART_HandleTypeDef *PORTSER)
 }
 void WF_Ticks(struct WIFI *a, UART_HandleTypeDef *PORTSER, uint8_t * vRX)
 {
-	//a->_ticks++;
+	if (a->_HW_Init==HW_INITIATING) a->_HW_Init_ticks++;  //Si no se inicializa cuento ticks
+
 	if((a->_estado_conexion==TCP_CONN_OK || a->_estado_conexion==TCP_SND_EN_CURSO)&&(a->_TCP_Local_Server_EN==0))  a->_WF_SND_FLAG_ticks++;
 
 	if(a->_WF_SND_FLAG_ticks >= a->_gapTimeSND && a->_ejecucion!=1 && a->_TCP_Local_Server_EN==0) //wf_snd_flag_ticks>=4000
@@ -2161,3 +2163,59 @@ void WF_Ticks(struct WIFI *a, UART_HandleTypeDef *PORTSER, uint8_t * vRX)
 			a->_ticks=0;
 		}
 }
+
+
+int ESP8266_HW_Init(struct WIFI *a, UART_HandleTypeDef *SerialPort, char * RX_VECT_HLD, int * itemsRX) //Devuelve 1 si reinició OK, y 0 si no
+{
+	uint8_t ESP_REinit=0,
+			ESP_HW_Reset=0;
+
+    while(ESP_HW_Reset<=1)
+	{
+
+		do{
+			  HAL_UART_Transmit(SerialPort, "AT+RESTORE\r\n",12,100);
+
+			  HAL_Delay(500);
+			  a->_n_fcomp=5;			//Cdad de elementos del vector a analizar
+			  a->_n_orig=*itemsRX;
+			  while(FT_String_ND(RX_VECT_HLD,&a->_n_orig,"ready",&a->_n_fcomp,&a->_uartRCVD_tok,&a->_n_tok,&a->_n_fcomp,&a->_id_conn,&a->_overflowVector,FIND)!=1)
+			  {
+				  a->_n_orig=*itemsRX;
+					  if (a->_HW_Init_ticks>=5000)
+						 {
+							 break;
+						 }
+			  }
+
+			  if (a->_HW_Init_ticks<5000)
+			  {
+				  ESP_REinit=10;	//Condición de salida
+				  a->_HW_Init_ticks=0;
+			  }
+			  else
+			  {
+				  ESP_REinit++;		//Conteo de la cantidad de veces que se reinicia el ciclo
+				  a->_HW_Init_ticks=0;
+			  }
+
+		 } while (ESP_REinit<=5);
+
+		  if(ESP_REinit==10)
+		  {
+			  //Si salgo deberia borar la data para evitar que se mal interprete por otro comando
+			  *itemsRX=0;
+			  a->_HW_Init=HW_INITIATED;
+			  ESP_HW_Reset=10;	//Genero condicion de no entrar al while
+		  }
+		  else
+		  {
+			  ESP_HW_Reset++;
+			  ESP8266_HW_Reset(&a);
+			  ESP_REinit=0;
+			  if(ESP_HW_Reset==2) a->_HW_Init=HW_INIT_FAILED;
+		  }
+
+   }
+}
+

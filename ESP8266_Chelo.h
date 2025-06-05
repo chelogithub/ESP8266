@@ -113,6 +113,10 @@
 
 #define at_busy_p				1000
 
+#define HW_INITIATING 			0
+#define HW_INITIATED			1
+#define HW_INIT_FAILED 			2
+
 struct MBUS_FIFO
 {
 	uint8_t IDRX;	//
@@ -136,12 +140,14 @@ struct WIFI
 	char _TCP_Local_Server_Port[6];				//Puerto del Servidor TCP local
 	char _TCP_Local_Server_GWY[16];				//Gateway Servidor TCP Local
 	char _TCP_Local_Server_MSK[16];				//Mascara Servidor TCP Local
+	uint8_t  _HW_Init;							//Flag Hardware inicializado
 	uint8_t  _TCP_Local_Server_EN;				//Habilitar modo Servidor TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _TCP_Local_Server_Initiated;		//Servidor TCP ya iniciado TCP 0=DESACTIVADO 1=ACTIVADO
 	uint8_t  _automatizacion;					//Tareas gestionadas automaticamente
 	uint8_t  _FLAG_UART_WF;						//Flag de info recibida
 	uint8_t  _moduleTO;							//TimeOut modulo ESP
 	uint8_t  _WF_SND_FLAG;						//Flag para enviar data
+	uint32_t _HW_Init_ticks;					//Ticks de incializacion
 	uint32_t _WF_SND_FLAG_ticks;				//Ticks para el envio de info
 	uint32_t _gapTimeSND;						//Tiempo de envío entre paquetes
 	int	 _estado;					//Estado de m�dulo WIFI
@@ -334,3 +340,4 @@ int:		Devuelve el estado de la conexion
 struct WIFI *			:Estructura de datos para la funcion
 UART_HandleTypeDef *	:Puerto utilizado para el modulo
 int						: 0 no debug 1 debug*/
+
