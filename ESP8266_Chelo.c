@@ -316,8 +316,8 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 											else
 											{
 										//------------------TCP CONECTADO------------------//
-										a->_n_fcomp=strlen("CONNECT");
-										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"CONNECT",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
+												a->_n_fcomp=strlen("\r\nCONNECT\r\n");a->_n_fcomp=strlen("\r\nCONNECT\r\n");
+										if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"\r\nCONNECT\r\n",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Conectado desde el modulo
 											{
 											AT_decode=at_tcp_conectado;
 											}
@@ -340,6 +340,7 @@ a->_estado_data=0; //Al entrar, nunca se como se recibió la info
 		}
 		else
 		{
+			a->_n_fcomp=strlen("ERROR");
 			if (FT_String_ND(a->_uartRCVD,&a->_n_orig,"ERROR",&a->_n_fcomp,a->_uartRCVD_tok,&a->_n_tok,&chr_pos_fnc,&a->_id_conn,a->_overflowVector,FIND)==1)//Intentando conectar con servidor TCP caido
 			{
 					AT_decode=at_error;
@@ -1757,8 +1758,8 @@ int WiFi_Conn_ND( struct WIFI *b, UART_HandleTypeDef *PORTSER, int EN_DEBUG )
 							}
 
 							//----Condiciones de cambio de estado
-							if((b->_estado==21)||(b->_estado==23)) b->_estado_conexion=TCP_SRVR_OK;
-							if((b->_estado==22)) b->_estado_conexion=TCP_SRVR_ERROR;
+							if((b->_estado==at_tcp_srvr_ok)||(b->_estado==at_tcp_srvr_ok_noch)) b->_estado_conexion=TCP_SRVR_OK;
+							if((b->_estado==at_tcp_srvr_err)) b->_estado_conexion=TCP_SRVR_ERROR;
 							//----Condiciones de cambio de estado
 						}
 						break;
@@ -2146,7 +2147,7 @@ void WF_Ticks(struct WIFI *a, UART_HandleTypeDef *PORTSER, uint8_t * vRX)
 				}
 				a->_ticks=0;  //Se agrega para que vuelva a entrar en el siguiente TO y no se queda aqui for ever
 			}
-			if ((a->_instruccion==2)&&(a->_ticks2 > 20500)) //250603 //if (wf._ticks > 5000)
+			if ((a->_instruccion==2)&&(a->_ticks2 > 20500)) //250603 //if (wf._ticks > 5000)  20500
 			{
 				a->_moduleTO=1;
 				if(PORTSER->Instance->CR1== 0x200C)  //--------------------Evito error UART colgado
